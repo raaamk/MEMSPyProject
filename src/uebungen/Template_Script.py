@@ -4,7 +4,7 @@ This is a template of script.
 
 SYNTAX
 -
-#hallo test test
+#hallo test test test
 INPUT VARIABLES
 -
 
