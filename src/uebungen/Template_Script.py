@@ -49,7 +49,7 @@ Copyright 2023 - TH Köln
 # import control as co
 # import scipy as sc
 # import sympy as sy
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 #----------------------------------
 # PARAMETERS
