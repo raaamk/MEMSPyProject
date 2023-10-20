@@ -4,7 +4,7 @@ This is a template of script.
 
 SYNTAX
 -
-test
+
 INPUT VARIABLES
 -
 
