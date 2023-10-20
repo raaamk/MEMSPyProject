@@ -10,7 +10,6 @@ G_pt2a = np.array([5 * 0.05, 5 + 0.05, 1])
 G_pt2d = np.array([5 ^ 2, 2 * 0.7 * 5, 1])
 G_I = np.array([5, 0])
 
-
 G_pt1_tf = co.tf(num, G_pt1)
 G_pt2a_tf = co.tf(num, G_pt2a)
 G_I_tf = co.tf(num, G_I)
