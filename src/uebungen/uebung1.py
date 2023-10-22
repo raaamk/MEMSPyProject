@@ -31,5 +31,8 @@ print('Zeros von G_I:', co.zeros(G_I_tf))
 if all(np.real(co.poles(G_pt2a_tf)) < 0):
     print("Stabil")
 
+plt.figure(1)
+co.pzmap(G_pt2d_tf, plot=True)
+plt.figure(2)
 co.pzmap(G_pt2a_tf, plot=True)
 plt.show()
