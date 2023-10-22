@@ -39,5 +39,16 @@ plt.figure(3)
 co.bode(G_pt1_tf)
 plt.figure(4)
 co.nyquist_plot(G_pt1_tf)
-plt.show()
 
+G_pt1_step = co.step_response(G_pt1_tf)
+G_pt2a_step = co.step_response(G_pt2a_tf)
+G_pt2d_step = co.step_response(G_pt2d_tf)
+G_I_step = co.step_response(G_I_tf)
+
+fig5, stepres = plt.subplots(2, 2)
+stepres[0, 0].plot(G_pt1_step[0], G_pt1_step[1])
+stepres[0, 1].plot(G_pt2a_step[0], G_pt2a_step[1])
+stepres[1, 0].plot(G_pt2d_step[0], G_pt2d_step[1])
+stepres[1, 1].plot(G_I_step[0], G_I_step[1])
+
+plt.show()
