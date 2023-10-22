@@ -10,16 +10,23 @@ G_I = np.array([5, 0])
 
 G_pt1_tf = co.tf(num, G_pt1)
 G_pt2a_tf = co.tf(num, G_pt2a)
+G_pt2d_tf = co.tf(num, G_pt2d)
 G_I_tf = co.tf(num, G_I)
+
 
 print(G_pt1_tf)
 print(G_pt2a_tf)
+print(G_pt2d_tf)
 print(G_I_tf)
 
 print('Poles von G_pt1:', co.poles(G_pt1_tf))
 print('Zeros von G_pt1:', co.zeros(G_pt1_tf))
 print('Poles von G_pt2a:', co.poles(G_pt2a_tf))
 print('Zeros von G_pt2a:', co.zeros(G_pt2a_tf))
+print('Poles von G_pt2d:', co.poles(G_pt2d_tf))
+print('Zeros von G_pt2d:', co.zeros(G_pt2d_tf))
+print('Poles von G_I:', co.poles(G_I_tf))
+print('Zeros von G_I:', co.zeros(G_I_tf))
 
 co.pzmap(G_pt2a_tf, plot=True)
 plt.show()
