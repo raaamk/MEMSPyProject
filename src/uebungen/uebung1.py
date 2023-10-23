@@ -2,6 +2,7 @@ import control as co
 import numpy as np
 import matplotlib.pyplot as plt
 
+print('test123')
 num = np.array([1])
 G_pt1 = np.array([5, 1])
 G_pt2a = np.array([5 * 0.05, 5 + 0.05, 1])
