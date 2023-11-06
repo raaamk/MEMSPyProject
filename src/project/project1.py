@@ -43,13 +43,14 @@ Copyright 2023 - TH Köln
 # ----------------------------------
 
 # import time
-# import math
+import math
 # import numpy as np
 # import pandas as pd
 # import control as co
 # import scipy as sc
 # import sympy as sy
 import matplotlib.pyplot as plt
+import numpy
 
 # ----------------------------------
 # PARAMETERS
@@ -57,7 +58,7 @@ import matplotlib.pyplot as plt
 
 # Umgebung
 rho_air = 1.225
-la = [5.0, 6.0, 7.0, 8.0, 9.0, 11.0, 50.0]
+la = [5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 50.0]
 c_p = [0.4, 0.45, 0.48, 0.46, 0.44, 0.4, 0.33, 0.0]
 K_m = 75.648
 
@@ -79,9 +80,9 @@ b_G = 2.2*10**4
 i_G2 = 1000
 
 # Input
-v_w = 1
-T = 5
-M_B = 1*10**7
+v_w = 18
+T = 30
+M_B = 0
 
 # Output
 w = [0]
@@ -101,7 +102,7 @@ def function_template(parm_1, parms_2, parms_3):
 # ----------------------------------
 
 # Execute preprocessing operation
-# ...
+c_m = c_p[0]/la[0]
 
 
 # ----------------------------------
@@ -109,24 +110,24 @@ def function_template(parm_1, parms_2, parms_3):
 # ----------------------------------
 
 # Execute main operation
+for i in range(1, 100):
+    print(i)
+    w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) - ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) + 1) - (M_B * T) / (J_0 + J_1 * 100))
+    print("W:", w[i])
+    la_calc = l_R * w[i] / v_w
 
+    if la_calc < 5:
+        la_calc = 5
+    elif la_calc > 50:
+        la_calc = 50
 
+    c_p_interp = numpy.interp(la_calc, c_p, la)
+    c_m = c_p_interp / la_calc
+    print("la_calc", la_calc)
+print(w)
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
 # Initialize window for step responses
-fig1, ax1 = plt.subplots(nrows=2, ncols=2)
-fig1.canvas.manager.set_window_title('Step responses')
 
-# Show results
-# ax1[0,0].plot(t_pt1, y_pt1, label="PT1")
-# ...
-# ax1[0,0].set_title("Title")
-# ax1[0,0].set_xlabel("x")
-# ax1[0,0].set_ylabel("y")
-# ax1[0,0].legend()
-# ax1[0,0].grid()
-
-# fig1.show()
-plt.waitforbuttonpress(0)
