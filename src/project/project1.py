@@ -121,7 +121,7 @@ for i in range(1, 100):
     elif la_calc > 50:
         la_calc = 50
 
-    c_p_interp = numpy.interp(la_calc, c_p, la)
+    c_p_interp = numpy.interp(la_calc, la, c_p)
     c_m = c_p_interp / la_calc
     print("la_calc", la_calc)
 print(w)
