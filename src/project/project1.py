@@ -49,7 +49,7 @@ import math
 # import control as co
 # import scipy as sc
 # import sympy as sy
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import numpy
 
 # ----------------------------------
@@ -69,19 +69,21 @@ l_R = 40
 n_G = 0.97
 J_0 = 6*10**7
 J_1 = 4*10**7
+J_Ges = J_0 + J_1 * 100
 b_0 = 1.2*10**7
 b_1 = 10.2*10**4
+b_Ges = b_0 + b_1 * 100
 i_G1 = 1/100
 
 # Windnachführung
 n_M = 0.95
-J_G = 2.1*10**8
-b_G = 2.2*10**4
+J_G = 2.1 * 10 ** 8
+b_G = 2.2 * 10 ** 4
 i_G2 = 1000
 
 # Input
-v_w = 18
-T = 30
+v_w = 25
+T = 1
 M_B = 0
 
 # Output
@@ -110,9 +112,10 @@ c_m = c_p[0]/la[0]
 # ----------------------------------
 
 # Execute main operation
-for i in range(1, 100):
+for i in range(1, 1800):
     print(i)
-    w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) - ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) + 1) - (M_B * T) / (J_0 + J_1 * 100))
+    #w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) + ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) - 1) - (M_B * T) / (J_0 + J_1 * 100))
+    w.append((0.5 * c_m * rho_air * math.pi * l_R**3 * v_w**2 * T) / J_Ges - (w[i - 1] * b_Ges * T) / J_Ges - (K_m * w[i - 1] * 100 * T) / J_Ges + w[i - 1] - (M_B * T) / J_Ges)
     print("W:", w[i])
     la_calc = l_R * w[i] / v_w
 
