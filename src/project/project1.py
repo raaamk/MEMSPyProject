@@ -148,6 +148,8 @@ for i in range(1, iteration + 1):
     weatherdata = WeatherDataFetcher()
     weatherdata.save_weather_data()
     v_w = weatherdata.saved_windspeed
+    w_d = weatherdata.saved_winddirection
+    v_w_R = v_w * math.cos(math.radians(w_d))
 
     # w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w_R**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) + ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) - 1) - (M_B * T) / (J_0 + J_1 * 100))
     w.append((0.5 * c_m * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 * T) / J_Ges - (w[i - 1] * b_Ges * T) / J_Ges - (K_m * w[i - 1] * 100 * T) / J_Ges + w[i - 1] - (M_B * T) / J_Ges)
