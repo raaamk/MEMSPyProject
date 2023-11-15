@@ -42,15 +42,10 @@ Copyright 2023 - TH Köln
 # DEPENDENCIES
 # ----------------------------------
 
-# import time
 import math
-# import numpy as np
-# import pandas as pd
-# import control as co
-# import scipy as sc
-# import sympy as sy
-#import matplotlib.pyplot as plt
-import numpy
+import matplotlib.pyplot as plt
+import numpy as np
+import requests
 
 # ----------------------------------
 # PARAMETERS
@@ -82,21 +77,43 @@ b_G = 2.2 * 10 ** 4
 i_G2 = 1000
 
 # Input
-v_w = 25
-T = 1
-M_B = 0
+v_w = 25.0  # Windgeschwindigkeit
+T = 1  # Abtastzeit
+M_B = 0  # Bremsmoment
+M_G = 1000  # Windnachführung Motormoment
+iteration = 100  # Anzahl Iterationen
+w_d = 0 # Windrichtung in Grad
 
 # Output
-w = [0]
+w = [0.0]
+w_G = [0.0]
+alpha_G_rad = [0.0]
+alpha_G_deg = [0.0]
+iteration_time = [0]
 
 # ----------------------------------
 # FUNCTIONS
 # ----------------------------------
 
-def function_template(parm_1, parms_2, parms_3):
-    '''This is a docstring for a short description of the functions purpose. Substitute function name with a meaningful one
-    and keyword 'pass' with code. Use comments.'''
-    pass
+def get_weather_data(self):
+    # Define API URL
+    api_url = "https://api.open-meteo.com/v1/forecast?latitude=50.93&longitude=6.95&current=temperature_2m,windspeed_10m,winddirection_10m"
+    # Request data
+    response = requests.get(api_url)
+    # Check if request and response is valid
+    windspeed_10m = []
+    winddirection_10m = []
+    if response.status_code == 200:
+        weather_data = response.json()
+        windspeed_10m = weather_data['current']['windspeed_10m']
+        winddirection_10m = weather_data['current']['winddirection_10m']*math.pi/180
+    else:
+        print("Failed to fetch weather data.")
+
+    return windspeed_10m, winddirection_10m
+
+
+
 
 
 # ----------------------------------
@@ -104,7 +121,8 @@ def function_template(parm_1, parms_2, parms_3):
 # ----------------------------------
 
 # Execute preprocessing operation
-c_m = c_p[0]/la[0]
+#c_m = c_p[0]/la[0]
+v_w_R = v_w * math.cos(math.radians(w_d))
 
 
 # ----------------------------------
@@ -112,26 +130,60 @@ c_m = c_p[0]/la[0]
 # ----------------------------------
 
 # Execute main operation
-for i in range(1, 1800):
-    print(i)
-    #w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) + ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) - 1) - (M_B * T) / (J_0 + J_1 * 100))
-    w.append((0.5 * c_m * rho_air * math.pi * l_R**3 * v_w**2 * T) / J_Ges - (w[i - 1] * b_Ges * T) / J_Ges - (K_m * w[i - 1] * 100 * T) / J_Ges + w[i - 1] - (M_B * T) / J_Ges)
-    print("W:", w[i])
-    la_calc = l_R * w[i] / v_w
+for i in range(1, iteration+1):
+    la_calc = l_R * w[i-1] / v_w
 
     if la_calc < 5:
-        la_calc = 5
+        la_calc = 5.0
     elif la_calc > 50:
-        la_calc = 50
+        la_calc = 50.0
 
-    c_p_interp = numpy.interp(la_calc, la, c_p)
+    c_p_interp = np.interp(la_calc, la, c_p)
     c_m = c_p_interp / la_calc
-    print("la_calc", la_calc)
-print(w)
+
+    weather = get_weather_data()
+    v_w = weather.w
+    v_w_R = v_w * math.cos(math.radians(w_d))
+
+    #w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w_R**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) + ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) - 1) - (M_B * T) / (J_0 + J_1 * 100))
+    w.append((0.5 * c_m * rho_air * math.pi * l_R**3 * v_w_R**2 * T) / J_Ges - (w[i - 1] * b_Ges * T) / J_Ges - (K_m * w[i - 1] * 100 * T) / J_Ges + w[i - 1] - (M_B * T) / J_Ges)
+    w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i-1] * T) / J_G + w_G[i-1])
+    alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i-1])
+    alpha_G_deg.append(math.degrees(alpha_G_rad[i]))
+
+    if alpha_G_deg[i] - w_d > 20:
+        M_G = 10
+    elif alpha_G_deg[i] - w_d < 20:
+        M_G = -10
+    else:
+        M_G = 0
+
+    iteration_time.append(T*i)
+    print("Durchlauf", i)
+    print("w:", w[i])
+    print("la_calc:", la_calc)
+
+#print(w)
+print("Winkel", math.degrees(alpha_G_rad[iteration]))
+
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
-# Initialize window for step responses
+# Plot w
+plt.figure(1)
+plt.plot(iteration_time, w)
+plt.title("Plot von w")
+plt.xlabel("Zeit in Sekunden")
+plt.ylabel("Winkelgeschwindigkeit")
 
+# Plot Winkel
+plt.figure(2)
+plt.plot(iteration_time, alpha_G_deg)
+plt.title("Plot von Winkel")
+plt.xlabel("Zeit in Sekunden")
+plt.ylabel("Winkel")
+
+# Show Plots
+plt.show()
