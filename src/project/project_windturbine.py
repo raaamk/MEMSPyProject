@@ -77,12 +77,12 @@ b_G = 2.2 * 10 ** 4
 i_G2 = 1000
 
 # Input
-v_w = 25.0  # Windgeschwindigkeit
+#v_w = 25.0  # Windgeschwindigkeit
 T = 1  # Abtastzeit
 M_B = 0  # Bremsmoment
 M_G = 1000  # Windnachführung Motormoment
 iteration = 100  # Anzahl Iterationen
-w_d = 0  # Windrichtung in Grad
+#w_d = 0  # Windrichtung in Grad
 
 # Output
 w = [0.0]
@@ -101,7 +101,13 @@ iteration_time = [0]
 # PREPROCESSING
 # ----------------------------------
 
-# Execute preprocessing operation
+# Aktuelle Wetterdaten holen
+weatherdata = WeatherDataFetcher()
+weatherdata.save_weather_data()
+v_w = weatherdata.saved_windspeed
+w_d = weatherdata.saved_winddirection
+
+# Windgeschwindigkeit umrechnen auf Rotor
 # c_m = c_p[0]/la[0]
 v_w_R = v_w * math.cos(math.radians(w_d))
 
@@ -120,12 +126,6 @@ for i in range(1, iteration + 1):
 
     c_p_interp = np.interp(la_calc, la, c_p)
     c_m = c_p_interp / la_calc
-
-    weatherdata = WeatherDataFetcher()
-    weatherdata.save_weather_data()
-    v_w = weatherdata.saved_windspeed
-    w_d = weatherdata.saved_winddirection
-    v_w_R = v_w * math.cos(math.radians(w_d))
 
     # w.append((c_m * 0.5 * rho_air * math.pi * l_R**3 * v_w_R**2 * T) / (J_0 + J_1 * 100) - w[i-1] * ((K_m * 100 * T) / (J_0 + J_1 * 100) + ((b_0 + b_1 * 100) * T) / (J_0 + J_1 * 100) - 1) - (M_B * T) / (J_0 + J_1 * 100))
     w.append((0.5 * c_m * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 * T) / J_Ges - (w[i - 1] * b_Ges * T) / J_Ges - (K_m * w[i - 1] * 100 * T) / J_Ges + w[i - 1] - (M_B * T) / J_Ges)
