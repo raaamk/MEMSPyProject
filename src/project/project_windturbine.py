@@ -78,7 +78,7 @@ i_G2 = 1000
 
 # Input
 #v_w = 25.0  # Windgeschwindigkeit
-T = 1  # Abtastzeit
+T = 0.01  # Zeitkonstante
 M_B = 0  # Bremsmoment
 M_G = 1000  # Windnachführung Motormoment
 iteration = 100  # Anzahl Iterationen
