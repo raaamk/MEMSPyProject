@@ -111,7 +111,7 @@ v_w_R = v_w * math.cos(math.radians(w_d))
 
 # Execute main operation
 for i in range(1, iteration + 1):
-    la_calc = l_R * w[i - 1] / v_w
+    la_calc = l_R * w[i - 1] / v_w_R
 
     if la_calc < 5:
         la_calc = 5.0
