@@ -1,6 +1,7 @@
 import requests
 import math
 
+
 class WeatherDataFetcher:
     def get_weather_data(self):
         # Define API URL
