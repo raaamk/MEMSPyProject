@@ -135,7 +135,7 @@ for i in range(1, iteration + 1):
 
     if alpha_G_deg[i] - w_d > 20:
         M_G = 10
-    elif alpha_G_deg[i] - w_d < 20:
+    elif alpha_G_deg[i] - w_d < -20:
         M_G = -10
     else:
         M_G = 0
