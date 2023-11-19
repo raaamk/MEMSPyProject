@@ -76,11 +76,11 @@ i_G2 = 1000  # Übersetzung (ins Langsame)
 
 # Input
 v_w = 25.0  # Windgeschwindigkeit [m/s]
-w_d = 0  # Windrichtung [degree]
+w_d = 0  # Windrichtung (Direction)
 T = 0.01  # Zeit/Abtastrate
 M_B = 0  # Bremsmoment
-M_G = 1000  # Antriebsmoment Gondel
-iteration = 100  # Anzahl Iterationen
+M_G = 0  # Antriebsmoment Gondel
+iteration = 300000  # Anzahl Iterationen
 
 # Output
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
@@ -111,6 +111,8 @@ weatherdata.save_weather_data()
 v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
+v_w = 11  # löschen später
+w_d = math.radians(100)  # löschen später
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
@@ -118,11 +120,6 @@ w_d = weatherdata.saved_winddirection  # in [rad]
 # Execute main operation
 for i in range(1, iteration + 1):
     delta_current = (math.degrees(w_d) - alpha_G_deg[i-1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
-
-    #print(w_d)
-    #print(alpha_G_deg)
-    #print(delta_current)
-    v_w = 11  # löschen später
 
     v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit (math.cos rechnet mit radians)
 
@@ -138,12 +135,12 @@ for i in range(1, iteration + 1):
     c_m = c_p_interp / la_calc
 
     # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
-    w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
+    w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
 
     # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
     w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])
     alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i - 1])  # Berechnet den Winkel der Gondel [rad]
-    alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [Grad]
+    alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
 
     # Leistungen berechnen für Generatorstrang
     P_w.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
@@ -161,8 +158,9 @@ for i in range(1, iteration + 1):
         M_G = 0
 
     # Leistung für Gondel
-    P_G.append(w_G[i] * M_G / n_M)  # Berechne die Antriebsleistung für die Gondel
+    P_G.append(w_G[i] * M_G * n_M)  # Berechne die Antriebsleistung für die Gondel
 
+    # Für Erstellung der Plots
     iteration_time.append(T * i)
 
 print('Der Wind kommt aus', math.degrees(w_d), 'und ist', v_w, 'm/s schnell')
@@ -175,7 +173,7 @@ print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iterati
 # POSTPROCESSING
 # ----------------------------------
 
-# Diagramme erstellen
+# Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # Plot 1: Winkelgeschwindigkeiten
@@ -187,10 +185,10 @@ axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
 axs[0].legend()
 
 # Plot 2: Leistungen
-axs[1].plot(iteration_time, P_w, label='Pw')
-axs[1].plot(iteration_time, P_M, label='PM')
-axs[1].plot(iteration_time, P_E, label='PE')
-axs[1].plot(iteration_time, P_G, label='PG')
+axs[1].plot(iteration_time, P_w, label='P_w')
+axs[1].plot(iteration_time, P_M, label='P_M')
+axs[1].plot(iteration_time, P_E, label='P_E')
+axs[1].plot(iteration_time, P_G, label='P_G')
 axs[1].set_title("Leistungen")
 axs[1].set_xlabel("Zeit in Sekunden")
 axs[1].set_ylabel("Leistung [W]")

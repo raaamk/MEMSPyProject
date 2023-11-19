@@ -3,6 +3,10 @@ import math
 
 
 class WeatherDataFetcher:
+    def __init__(self):
+        self.saved_windspeed = None
+        self.saved_winddirection = None
+
     def get_weather_data(self):
         # Define API URL
         api_url = "https://api.open-meteo.com/v1/forecast?latitude=50.93&longitude=6.95&current=temperature_2m,windspeed_10m,winddirection_10m"
