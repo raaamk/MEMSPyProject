@@ -74,8 +74,8 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(130)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 25.1  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
@@ -189,9 +189,9 @@ if v_w >= 5:
 # ----------------------------------
 
 # Ausgabe wichtiger Werte
-if v_w >= 5:  # Anlage wird eingeschaltet
+if 5 <= v_w <= 25:  # Anlage wird eingeschaltet
     print('--------------ANLAGE--------------')
-    print('Anlage wurde eingeschaltet. Windgeschwindigkeit über 5 m/s.')
+    print('Anlage wurde eingeschaltet. Windgeschwindigkeit zwischen 5 m/s und 25 m/s.')
     print('')
     print('--------------AKTUELLE WINDLAGE--------------')
     print('Windrichtung:', math.degrees(w_d), '°')
@@ -204,7 +204,7 @@ if v_w >= 5:  # Anlage wird eingeschaltet
     print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
 elif v_w > 25:  # Anlage wird nicht eingeschaltet über 25 m/s
     print('--------------ANLAGE--------------')
-    print('Anlage wurde  nicht eingeschaltet. Windgeschwindigkeit über 25 m/s.')
+    print('Anlage wurde  nicht eingeschaltet. Windgeschwindigkeit über 25 m/s. Anlage wurde zu 90° aus dem Wind gedreht und verriegelt.')
     print('')
     print('--------------AKTUELLE WINDLAGE--------------')
     print('Windrichtung:', math.degrees(w_d), '°')
@@ -215,7 +215,7 @@ elif v_w > 25:  # Anlage wird nicht eingeschaltet über 25 m/s
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
 elif v_w < 5:  # Anlage wird nicht eingeschaltet unter 5 m/s
     print('--------------ANLAGE--------------')
-    print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s.')
+    print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s. Anlage wurde mechanisch verriegelt.')
     print('')
     print('--------------AKTUELLE WINDLAGE--------------')
     print('Windrichtung:', math.degrees(w_d), '°')
