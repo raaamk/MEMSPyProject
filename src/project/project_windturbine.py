@@ -162,6 +162,7 @@ if v_w >= 5:
         la_calc = calculate_la(v_w_R, w[i - 1])
         c_m = calculate_c_m(la_calc)
 
+        # Wirkende Windgeschwindigkeit nur über 0 m/s, da sonst negative Windleistung (Wind trifft auf Windrad von hinten)
         if v_w_R < 0:
             v_w_R = 0
 
@@ -174,7 +175,8 @@ if v_w >= 5:
         alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
         alpha_G_deg_plot.append(alpha_G_deg[i] % 360)  # Winkel Gondel auf Bereich zwischen 0 und 360 Grad
 
-        if v_w > 25:
+        # Antriebsmoment für Gondel bestimmen
+        if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht
             w[i] = 0
             if -91 < delta_current < -89 or 89 < delta_current < 91:
                 w_G[i] = 0
@@ -182,8 +184,7 @@ if v_w >= 5:
                 M_G = -1
             elif -89 <= delta_current <= 0 or 91 <= delta_current <= 180:
                 M_G = 1
-        else:
-            # Antriebsmoment für Gondel bestimmen
+        else:  # Sonst Gondel normal zum Wind hindrehen
             M_G = update_M_G(delta_current)
 
         # Leistungen berechnen für Generatorstrang
