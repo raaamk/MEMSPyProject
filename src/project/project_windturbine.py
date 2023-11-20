@@ -129,7 +129,7 @@ w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
 v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
-w_d = math.radians(110)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+w_d = math.radians(230)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 
 
 # ----------------------------------
@@ -184,24 +184,24 @@ print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's---
 print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
 print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
 print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s' )
-print('Elektrische Leistung des Generators (PE):', P_E[i], 'W')
+print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # Plot 1: Winkelgeschwindigkeiten
-axs[0].plot(iteration_time, w, label='Antriebswelle w_0')
-axs[0].plot(iteration_time, w_G, label='Gondel w_G')
+axs[0].plot(iteration_time, w, label='Antriebswelle \u03C9_0')
+axs[0].plot(iteration_time, w_G, label='Gondel \u03C9_G')
 axs[0].set_title("Winkelgeschwindigkeiten")
 axs[0].set_xlabel("Zeit [s]")
 axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
 axs[0].legend()
 
 # Plot 2: Leistungen
-axs[1].plot(iteration_time, P_w, label='P_w')
-axs[1].plot(iteration_time, P_M, label='P_M')
-axs[1].plot(iteration_time, P_E, label='P_E')
-axs[1].plot(iteration_time, P_G, label='P_G')
+axs[1].plot(iteration_time, P_w, label='P_W')  # Windleistung
+axs[1].plot(iteration_time, P_M, label='P_M')  # Mechanische Leistung Generator
+axs[1].plot(iteration_time, P_E, label='P_E')  # Elektrische Leistung Generator
+axs[1].plot(iteration_time, P_G, label='P_G')  # Elektrische Leistung Gondelmotor
 axs[1].set_title("Leistungen")
 axs[1].set_xlabel("Zeit [s]")
 axs[1].set_ylabel("Leistung [W]")
