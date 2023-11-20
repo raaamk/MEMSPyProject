@@ -1,28 +1,21 @@
-'''
+"""
 INFO
-This is a template of script.
-
-SYNTAX
--
+Project Windkraftanlage
 
 INPUT VARIABLES
--
+iteration, T
 
 OUTPUT VARIABLES
--
+Winkelgeschwindigkeiten, Leistungen
 
 DESCRIPTION
-This template has predefined sections. Use those that meet your criteria. Add further ones if required.
-Substitute comments with meaningful ones assigned to the specific tasks.
-
-SEE ALSO
--
+Dieses Programm modelliert eine Windkraftanlage mit Generatorstrang und Windnachführung.
 
 FILE
 .../project_windturbine.py
 
 ASSOCIATED FILES
--
+.../WeatherDataFetcher.py
 
 AUTHOR(S)
 Mark Janitschek
@@ -34,10 +27,10 @@ DATE
 06.11.2023
 
 LAST MODIFIED
--
+20.11.2023
 
 Copyright 2023 - TH Köln
-'''
+"""
 # ----------------------------------
 # DEPENDENCIES
 # ----------------------------------
@@ -69,16 +62,18 @@ b_1 = 4  # Reibbeiwert der Abtriebswelle
 i_G1 = 1 / 100  # Übersetzung Getriebe
 
 # Windnachführung
-n_M = 0.95   # Wirkungsgrad des Motors
+n_M = 0.95  # Wirkungsgrad des Motors
 J_G = 2.1 * 10 ** 8  # Massenträgheitsmoment der Gondel
 b_G = 2.2 * 10 ** 4  # Reibbeiwert der Gondellagerung
 i_G2 = 1000  # Übersetzung (ins Langsame)
 
+# Initialising
+M_B = 0  # Bremsmoment
+M_G = 0  # Antriebsmoment Gondel
+
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-M_B = 0  # Bremsmoment
-M_G = 0  # Antriebsmoment Gondel
 
 # Output
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
@@ -86,7 +81,7 @@ w_ab = [0]  # Winkelgeschwindigkeit Abtriebsstrang
 w_G = [0]  # Winkelgeschwindigkeit Gondel
 alpha_G_rad = [0]  # Winkel der Gondel in rad
 alpha_G_deg = [0]  # Winkel der Gondel in degree
-alpha_G_deg_plot = [0] # Winkel der Gondel in degree immer zwischen 0 und 360 Grad für Plot
+alpha_G_deg_plot = [0]  # Winkel der Gondel in degree immer zwischen 0 und 360 Grad für Plot
 iteration_time = [0]  # Zei der Iterationen
 delta = [0]  # Winkel zwischen Gondelausrichtung und Windrichtung
 P_w = [0]  # Windleistung
@@ -111,15 +106,17 @@ v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
-#v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
-#w_d = math.radians(310)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+# v_w = 11 # Möglich eigenen Wert einzutippen, sonst auskommentieren
+# w_d = math.radians(310)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+
+
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
 
 # Execute main operation
 for i in range(1, iteration + 1):
-    delta_current = (math.degrees(w_d) - alpha_G_deg[i-1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
+    delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
 
     v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit (math.cos rechnet mit radians)
 
@@ -145,7 +142,7 @@ for i in range(1, iteration + 1):
 
     # Leistungen berechnen für Generatorstrang
     P_w.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
-    w_ab.append(w[i]/i_G1)  # Berechnet die Winkelgeschwindigkeit des Abtriebsstranges [rad/s]
+    w_ab.append(w[i] / i_G1)  # Berechnet die Winkelgeschwindigkeit des Abtriebsstranges [rad/s]
     P_M.append(K_m * (w_ab[i]) * (w_ab[i]))  # Berechnet die mechanische Leistung des Generators
     P_E.append(n_G * P_M[i])  # Berechnet die elektrische Leistung des Generators
 
@@ -169,6 +166,7 @@ print('Das Windrad ist nun Richtung', (alpha_G_deg_plot[iteration]), '° gericht
 print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
 print('Die elektrische Leistung des Generators (PE) am Zeitpunkt', iteration, '[s] ist', P_E[i], '[W]')
 print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iteration, '[s] ist', w[i], '[rad/s]')
+
 
 # ----------------------------------
 # POSTPROCESSING
@@ -196,7 +194,7 @@ axs[1].set_ylabel("Leistung [W]")
 axs[1].legend()
 
 # Plot 3: Wind- und Gondelausrichtung
-axs[2].plot(iteration_time, [math.degrees(w_d)]*len(iteration_time), label='Windrichtung')
+axs[2].plot(iteration_time, [math.degrees(w_d)] * len(iteration_time), label='Windrichtung')
 axs[2].plot(iteration_time, alpha_G_deg_plot, label='Gondelrichtung')
 axs[2].set_title("Wind- und Gondelausrichtung")
 axs[2].set_xlabel("Zeit in Sekunden")
