@@ -138,6 +138,7 @@ w_d = math.radians(110)  # Möglich eigenen Wert einzutippen, sonst auskommentie
 
 # Main Schleife
 for i in range(1, iteration + 1):
+    # Bestimmung der wirkenden Windgeschwindigkeit
     delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
     v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit
 
