@@ -3,7 +3,7 @@ INFO
 Project Windkraftanlage
 
 INPUT VARIABLES
-iteration, T
+iteration, T, v_w, w_d, get_weather
 
 OUTPUT VARIABLES
 Winkelgeschwindigkeiten, Leistungen
@@ -147,12 +147,13 @@ if get_weather:
     v_w = weatherdata.saved_windspeed
     w_d = weatherdata.saved_winddirection  # in [rad]
 
+
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
 
 # Main Schleife
-if v_w >= 5:
+if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
     for i in range(1, iteration + 1):
         # Bestimmung der wirkenden Windgeschwindigkeit
         delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
@@ -176,7 +177,7 @@ if v_w >= 5:
         alpha_G_deg_plot.append(alpha_G_deg[i] % 360)  # Winkel Gondel auf Bereich zwischen 0 und 360 Grad
 
         # Antriebsmoment für Gondel bestimmen
-        if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht
+        if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht und verriegelt (w = 0)
             w[i] = 0
             if -91 < delta_current < -89 or 89 < delta_current < 91:
                 w_G[i] = 0
@@ -198,6 +199,7 @@ if v_w >= 5:
 
         # Für Erstellung der Plots
         iteration_time.append(T * i)
+
 
 # ----------------------------------
 # POSTPROCESSING
