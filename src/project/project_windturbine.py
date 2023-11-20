@@ -111,8 +111,8 @@ v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
-v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
-w_d = math.radians(320)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+#v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+#w_d = math.radians(310)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
@@ -152,9 +152,9 @@ for i in range(1, iteration + 1):
     # Wenn der Winkel zwischen Gondel und Windrichtung >20 oder <-20 ist, wird das Antriebsmoment für die Gondel auf den entsprechenden Wert gesetzt.
     delta.append(delta_current)
     if delta_current > 20:
-        M_G = 0.5
+        M_G = 1
     elif delta_current < -20:
-        M_G = -0.5
+        M_G = -1
     else:
         M_G = 0
 
@@ -164,8 +164,8 @@ for i in range(1, iteration + 1):
     # Für Erstellung der Plots
     iteration_time.append(T * i)
 
-print('Der Wind kommt aus', math.degrees(w_d), '° und ist', v_w, 'm/s schnell')
-print('Das Windrad ist Richtung', (alpha_G_rad[iteration]), '° gerichtet')
+print('Der Wind kommt aus', math.degrees(w_d), '° und ist', v_w, 'm/s schnell.')
+print('Das Windrad ist nun Richtung', (alpha_G_deg_plot[iteration]), '° gerichtet')
 print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
 print('Die elektrische Leistung des Generators (PE) am Zeitpunkt', iteration, '[s] ist', P_E[i], '[W]')
 print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iteration, '[s] ist', w[i], '[rad/s]')
@@ -201,7 +201,7 @@ axs[2].plot(iteration_time, alpha_G_deg_plot, label='Gondelrichtung')
 axs[2].set_title("Wind- und Gondelausrichtung")
 axs[2].set_xlabel("Zeit in Sekunden")
 axs[2].set_ylabel("Richtung [°]")
-axs[2].set_yticks(np.arange(0, 396, 36))
+axs[2].set_yticks(np.arange(0, 400, 40))
 axs[2].legend()
 
 # Einstellungen für das gesamte Diagramm
