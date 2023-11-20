@@ -87,7 +87,7 @@ alpha_G_deg = [0]  # Winkel der Gondel in degree
 alpha_G_deg_plot = [0]  # Winkel der Gondel in degree immer zwischen 0 und 360 Grad für Plot
 iteration_time = [0]  # Zei der Iterationen
 delta = [0]  # Winkel zwischen Gondelausrichtung und Windrichtung
-P_w = [0]  # Windleistung
+P_W = [0]  # Windleistung
 P_M = [0]  # Mechanische Leistung des Generators
 P_E = [0]  # Elektrische Leistung des Generators
 P_G = [0]  # Antriebsleistung Gondel
@@ -156,7 +156,7 @@ for i in range(1, iteration + 1):
     alpha_G_deg_plot.append(alpha_G_deg[i] % 360)
 
     # Leistungen berechnen für Generatorstrang
-    P_w.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
+    P_W.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
     w_ab.append(w[i] / i_G1)  # Berechnet die Winkelgeschwindigkeit des Abtriebsstranges [rad/s]
     P_M.append(K_m * (w_ab[i]) * (w_ab[i]))  # Berechnet die mechanische Leistung des Generators
     P_E.append(n_G * P_M[i])  # Berechnet die elektrische Leistung des Generators
@@ -198,7 +198,7 @@ axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
 axs[0].legend()
 
 # Plot 2: Leistungen
-axs[1].plot(iteration_time, P_w, label='P_W')  # Windleistung
+axs[1].plot(iteration_time, P_W, label='P_W')  # Windleistung
 axs[1].plot(iteration_time, P_M, label='P_M')  # Mechanische Leistung Generator
 axs[1].plot(iteration_time, P_E, label='P_E')  # Elektrische Leistung Generator
 axs[1].plot(iteration_time, P_G, label='P_G')  # Elektrische Leistung Gondelmotor
