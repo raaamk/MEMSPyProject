@@ -74,9 +74,9 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn want_weather = False
-w_d = math.radians(230)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn want_weather = False
-want_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
+v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(230)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
@@ -125,7 +125,7 @@ def update_M_G(delta_current):
 # ----------------------------------
 
 # Aktuelle Wetterdaten holen
-if want_weather:
+if get_weather:
     weatherdata = WeatherDataFetcher()
     weatherdata.save_weather_data()
     v_w = weatherdata.saved_windspeed
