@@ -105,6 +105,18 @@ def calculate_c_m(la_calc):
     c_p_interp = np.interp(la_calc, la, c_p)  # interpoliert den Wert für cp, mithilfe der Leistungsbeiwert-Schnelllaufzahl-Charakteristik und dem berechneten Lambda
     return c_p_interp / la_calc
 
+# Wenn der Winkel zwischen Gondel und Windrichtung >20 oder <-20 ist, wird das Antriebsmoment für die Gondel auf den entsprechenden Wert gesetzt.
+def update_M_G(delta_current):
+    delta.append(delta_current)
+    if delta_current > 20:
+        M_G = 1
+    elif delta_current < -20:
+        M_G = -1
+    else:
+        M_G = 0
+    return M_G
+
+
 # ----------------------------------
 # PREPROCESSING
 # ----------------------------------
@@ -116,28 +128,28 @@ v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
-v_w = 11 # Möglich eigenen Wert einzutippen, sonst auskommentieren
-w_d = math.radians(0)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+w_d = math.radians(110)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 
 
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
 
-# Execute main operation
+# Main Schleife
 for i in range(1, iteration + 1):
     delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
+    v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit
 
-    v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit (math.cos rechnet mit radians)
-
+    # Neues c_m bestimmen
     la_calc = calculate_la(v_w_R, w[i - 1])
     c_m = calculate_c_m(la_calc)
 
     # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
     w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
 
-    # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
-    w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])
+    # Gondelnachführung
+    w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
     alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i - 1])  # Berechnet den Winkel der Gondel [rad]
     alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
     alpha_G_deg_plot.append(alpha_G_deg[i] % 360)
@@ -148,14 +160,8 @@ for i in range(1, iteration + 1):
     P_M.append(K_m * (w_ab[i]) * (w_ab[i]))  # Berechnet die mechanische Leistung des Generators
     P_E.append(n_G * P_M[i])  # Berechnet die elektrische Leistung des Generators
 
-    # Wenn der Winkel zwischen Gondel und Windrichtung >20 oder <-20 ist, wird das Antriebsmoment für die Gondel auf den entsprechenden Wert gesetzt.
-    delta.append(delta_current)
-    if delta_current > 20:
-        M_G = 1
-    elif delta_current < -20:
-        M_G = -1
-    else:
-        M_G = 0
+    # Antriebsmoment für Gondel bestimmen
+    M_G = update_M_G(delta_current)
 
     # Leistung für Gondel
     P_G.append(w_G[i] * M_G * n_M)  # Berechne die Antriebsleistung für die Gondel
@@ -163,6 +169,7 @@ for i in range(1, iteration + 1):
     # Für Erstellung der Plots
     iteration_time.append(T * i)
 
+# Ausgabe wichtiger Werte
 print('Der Wind kommt aus', math.degrees(w_d), '° und ist', v_w, 'm/s schnell.')
 print('Das Windrad ist nun Richtung', (alpha_G_deg_plot[iteration]), '° gerichtet')
 print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
