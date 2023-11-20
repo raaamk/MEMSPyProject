@@ -73,9 +73,9 @@ M_G = 0  # Antriebsmoment Gondel
 
 # Input
 T = 1  # Zeit/Abtastrate
-iteration = 300000  # Anzahl Iterationen
-v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(180)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+iteration = 1000  # Anzahl Iterationen
+v_w = 300  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
@@ -136,6 +136,15 @@ def print_turbine_info():
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
 
 
+# Bremsmoment bestimmen
+def break_M_B(w_current):
+    if w_current * 60 / (2 * math.pi) > 40:  # Wenn Umdrehungen pro Minute größer als 40
+        M_B = 10 ** 7
+    else:
+        M_B = 0
+    return M_B
+
+
 # ----------------------------------
 # PREPROCESSING
 # ----------------------------------
@@ -169,6 +178,9 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
 
         # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
         w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
+
+        # Bremsmoment, wenn RPM > 40
+        M_B = break_M_B(w[i])
 
         # Gondelnachführung
         w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
