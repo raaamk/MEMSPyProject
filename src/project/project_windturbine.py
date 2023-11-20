@@ -75,11 +75,7 @@ b_G = 2.2 * 10 ** 4  # Reibbeiwert der Gondellagerung
 i_G2 = 1000  # Übersetzung (ins Langsame)
 
 # Input
-v_w = 25.0  # Windgeschwindigkeit [m/s]
-w_d = 0  # Windrichtung (Direction)
 T = 0.01  # Zeit/Abtastrate
-M_B = 0  # Bremsmoment
-M_G = 0  # Antriebsmoment Gondel
 iteration = 300000  # Anzahl Iterationen
 
 # Output
@@ -111,8 +107,9 @@ weatherdata.save_weather_data()
 v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
-v_w = 11  # löschen später
-w_d = math.radians(100)  # löschen später
+# Eigene Werte zum Testen eintippen
+v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+w_d = math.radians(0)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
@@ -163,9 +160,9 @@ for i in range(1, iteration + 1):
     # Für Erstellung der Plots
     iteration_time.append(T * i)
 
-print('Der Wind kommt aus', math.degrees(w_d), 'und ist', v_w, 'm/s schnell')
-print('Das Windrad ist Richtung', (alpha_G_rad[iteration]), 'gerichtet')
-print('Der am Windrad ankommende Wind ist ', v_w_R, 'm/s schnell')
+print('Der Wind kommt aus', math.degrees(w_d), '° und ist', v_w, 'm/s schnell')
+print('Das Windrad ist Richtung', (alpha_G_rad[iteration]), '° gerichtet')
+print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
 print('Die elektrische Leistung des Generators (PE) am Zeitpunkt', iteration, '[s] ist', P_E[i], '[W]')
 print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iteration, '[s] ist', w[i], '[rad/s]')
 
@@ -177,8 +174,8 @@ print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iterati
 fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # Plot 1: Winkelgeschwindigkeiten
-axs[0].plot(iteration_time, w, label='Antriebswelle')
-axs[0].plot(iteration_time, w_ab, label='Abtriebswelle')
+axs[0].plot(iteration_time, w, label='Antriebswelle w_0')
+axs[0].plot(iteration_time, w_ab, label='Abtriebswelle w_1')
 axs[0].set_title("Winkelgeschwindigkeiten der An- und Abtriebswelle")
 axs[0].set_xlabel("Zeit in Sekunden")
 axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
