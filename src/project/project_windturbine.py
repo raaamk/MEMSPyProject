@@ -138,10 +138,6 @@ if get_weather:
 
 # Main Schleife
 if v_w >= 5:
-    print('--------------ANLAGE--------------')
-    print('Anlage wurde eingeschaltet. Windgeschwindigkeit über 5 m/s.')
-    print('')
-
     for i in range(1, iteration + 1):
         # Bestimmung der wirkenden Windgeschwindigkeit
         delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
@@ -187,17 +183,16 @@ if v_w >= 5:
         # Für Erstellung der Plots
         iteration_time.append(T * i)
 
-else:
-    print('--------------ANLAGE--------------')
-    print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s.')
-    print('')
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
 # Ausgabe wichtiger Werte
-try:
+if v_w >= 5:  # Anlage wird eingeschaltet
+    print('--------------ANLAGE--------------')
+    print('Anlage wurde eingeschaltet. Windgeschwindigkeit über 5 m/s.')
+    print('')
     print('--------------AKTUELLE WINDLAGE--------------')
     print('Windrichtung:', math.degrees(w_d), '°')
     print('Windgeschwindigkeit:', v_w, 'm/s')
@@ -207,8 +202,17 @@ try:
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
     print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s')
     print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
-except:
-    pass
+elif 5 > v_w > 25:  #
+    print('--------------ANLAGE--------------')
+    print('Anlage wurde  nicht eingeschaltet. Windgeschwindigkeit über 25 m/s.')
+    print('')
+    print('--------------AKTUELLE WINDLAGE--------------')
+    print('Windrichtung:', math.degrees(w_d), '°')
+    print('Windgeschwindigkeit:', v_w, 'm/s')
+    print('')
+    print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
+    print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
+    print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
