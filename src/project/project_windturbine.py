@@ -74,8 +74,8 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 24  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(180)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(130)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
@@ -150,6 +150,9 @@ if v_w >= 5:
         # Neues c_m bestimmen
         la_calc = calculate_la(v_w_R, w[i - 1])
         c_m = calculate_c_m(la_calc)
+
+        if v_w_R < 0:
+            v_w_R = 0
 
         # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
         w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
