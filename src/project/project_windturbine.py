@@ -179,7 +179,7 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
         # Antriebsmoment für Gondel bestimmen
         if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht und verriegelt (w = 0)
             w[i] = 0
-            if -91 < delta_current < -89 or 89 < delta_current < 91:
+            if -91 < delta_current < -89 or 89 < delta_current < 91:  # Anlage wird verriegelt
                 w_G[i] = 0
             elif -180 <= delta_current <= -91 or 0 <= delta_current <= 89:
                 M_G = -1
