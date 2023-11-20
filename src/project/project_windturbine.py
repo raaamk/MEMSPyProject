@@ -202,7 +202,7 @@ try:
     print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
     print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
-    print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s' )
+    print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s')
     print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
 except:
     pass
