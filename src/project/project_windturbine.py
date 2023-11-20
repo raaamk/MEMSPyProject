@@ -74,8 +74,8 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(330)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 26  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(179)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
@@ -137,57 +137,78 @@ if get_weather:
 # ----------------------------------
 
 # Main Schleife
-for i in range(1, iteration + 1):
-    # Bestimmung der wirkenden Windgeschwindigkeit
-    delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
-    v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit
+if v_w >= 5:
+    print('--------------ANLAGE--------------')
+    print('Anlage wurde eingeschaltet. Windgeschwindigkeit über 5 m/s.')
+    print('')
 
-    # Neues c_m bestimmen
-    la_calc = calculate_la(v_w_R, w[i - 1])
-    c_m = calculate_c_m(la_calc)
+    for i in range(1, iteration + 1):
+        # Bestimmung der wirkenden Windgeschwindigkeit
+        delta_current = (math.degrees(w_d) - alpha_G_deg[i - 1] + 180) % 360 - 180  # Bringt die Differenz auf einen Wert zwischen -180 und 180
+        v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit
 
-    # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
-    w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
+        # Neues c_m bestimmen
+        la_calc = calculate_la(v_w_R, w[i - 1])
+        c_m = calculate_c_m(la_calc)
 
-    # Gondelnachführung
-    w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
-    alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i - 1])  # Berechnet den Winkel der Gondel [rad]
-    alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
-    alpha_G_deg_plot.append(alpha_G_deg[i] % 360)
+        # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
+        w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
 
-    # Leistungen berechnen für Generatorstrang
-    P_W.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
-    w_ab.append(w[i] / i_G1)  # Berechnet die Winkelgeschwindigkeit des Abtriebsstranges [rad/s]
-    P_M.append(K_m * (w_ab[i]) * (w_ab[i]))  # Berechnet die mechanische Leistung des Generators
-    P_E.append(n_G * P_M[i])  # Berechnet die elektrische Leistung des Generators
+        # Gondelnachführung
+        w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
+        alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i - 1])  # Berechnet den Winkel der Gondel [rad]
+        alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
+        alpha_G_deg_plot.append(alpha_G_deg[i] % 360)  # Winkel Gondel auf Bereich zwischen 0 und 360 Grad
 
-    # Antriebsmoment für Gondel bestimmen
-    M_G = update_M_G(delta_current)
+        if v_w > 25:
+            w[i] = 0
+            if -91 < delta_current < -89 or 89 < delta_current < 91:
+                w_G[i] = 0
+            elif -180 <= delta_current <= -91 or 0 <= delta_current <= 89:
+                M_G = -1
+            elif -89 <= delta_current <= 0 or 91 <= delta_current <= 180:
+                M_G = 1
+        else:
+            # Antriebsmoment für Gondel bestimmen
+            M_G = update_M_G(delta_current)
 
-    # Leistung für Gondel
-    P_G.append(w_G[i] * M_G * n_M)  # Berechne die Antriebsleistung für die Gondel
+        # Leistungen berechnen für Generatorstrang
+        P_W.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
+        w_ab.append(w[i] / i_G1)  # Berechnet die Winkelgeschwindigkeit des Abtriebsstranges [rad/s]
+        P_M.append(K_m * (w_ab[i]) * (w_ab[i]))  # Berechnet die mechanische Leistung des Generators
+        P_E.append(n_G * P_M[i])  # Berechnet die elektrische Leistung des Generators
 
-    # Für Erstellung der Plots
-    iteration_time.append(T * i)
+        # Leistung für Gondel
+        P_G.append(w_G[i] * M_G * n_M)  # Berechne die Antriebsleistung für die Gondel
 
+        # Für Erstellung der Plots
+        iteration_time.append(T * i)
+
+else:
+    print('--------------ANLAGE--------------')
+    print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s.')
+    print('')
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
 # Ausgabe wichtiger Werte
-print('--------------AKTUELLE WINDLAGE--------------')
-print('Windrichtung:', math.degrees(w_d), '°')
-print('Windgeschwindigkeit:', v_w, 'm/s')
-print('')
-print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
-print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
-print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
-print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s' )
-print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
+try:
+    print('--------------AKTUELLE WINDLAGE--------------')
+    print('Windrichtung:', math.degrees(w_d), '°')
+    print('Windgeschwindigkeit:', v_w, 'm/s')
+    print('')
+    print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
+    print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
+    print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+    print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s' )
+    print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
+except:
+    pass
 
 # Figure erstellen für Diagramme
-fig, axs = plt.subplots(3, 1, figsize=(10, 8))
+fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
 
 # Plot 1: Winkelgeschwindigkeiten
 axs[0].plot(iteration_time, w, label='Antriebswelle \u03C9_0')
