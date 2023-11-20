@@ -67,7 +67,7 @@ J_G = 2.1 * 10 ** 8  # Massenträgheitsmoment der Gondel
 b_G = 2.2 * 10 ** 4  # Reibbeiwert der Gondellagerung
 i_G2 = 1000  # Übersetzung (ins Langsame)
 
-# Initialising
+# Initialisierung
 M_B = 0  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
