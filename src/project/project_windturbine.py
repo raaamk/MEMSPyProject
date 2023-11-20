@@ -6,7 +6,7 @@ INPUT VARIABLES
 iteration, T, v_w, w_d, get_weather
 
 OUTPUT VARIABLES
-Winkelgeschwindigkeiten, Leistungen
+w, w_ab, w_G, alpha_G_rad, alpha_G_deg, alpha_G_deg_plot, iteration_time, delta, P_W, P_M, P_E, P_G
 
 DESCRIPTION
 Dieses Programm modelliert eine Windkraftanlage mit Generatorstrang und Windnachführung.
