@@ -202,7 +202,7 @@ if v_w >= 5:  # Anlage wird eingeschaltet
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
     print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s')
     print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
-elif 5 > v_w > 25:  #
+elif v_w > 25:  # Anlage wird nicht eingeschaltet über 25 m/s
     print('--------------ANLAGE--------------')
     print('Anlage wurde  nicht eingeschaltet. Windgeschwindigkeit über 25 m/s.')
     print('')
@@ -213,6 +213,14 @@ elif 5 > v_w > 25:  #
     print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
     print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
     print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+elif v_w < 5:  # Anlage wird nicht eingeschaltet unter 5 m/s
+    print('--------------ANLAGE--------------')
+    print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s.')
+    print('')
+    print('--------------AKTUELLE WINDLAGE--------------')
+    print('Windrichtung:', math.degrees(w_d), '°')
+    print('Windgeschwindigkeit:', v_w, 'm/s')
+    print('')
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
