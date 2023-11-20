@@ -94,6 +94,16 @@ P_G = [0]  # Antriebsleistung Gondel
 # FUNCTIONS
 # ----------------------------------
 
+# Neues Lambda bestimmen und nur Werte zwischen 5 und 50
+def calculate_la(v_w_R, w_prev):
+    la_calc = l_R * w_prev / v_w_R  # Berechnet Lambda
+    return max(5.0, min(50.0, la_calc))
+
+
+# c_m berechnen
+def calculate_c_m(la_calc):
+    c_p_interp = np.interp(la_calc, la, c_p)  # interpoliert den Wert für cp, mithilfe der Leistungsbeiwert-Schnelllaufzahl-Charakteristik und dem berechneten Lambda
+    return c_p_interp / la_calc
 
 # ----------------------------------
 # PREPROCESSING
@@ -120,16 +130,9 @@ for i in range(1, iteration + 1):
 
     v_w_R = v_w * math.cos(math.radians(delta_current))  # Berechnet die auf das Rotorblatt wirkende Windgeschwindigkeit (math.cos rechnet mit radians)
 
-    la_calc = l_R * w[i - 1] / v_w_R  # Berechnet Lambda
+    la_calc = calculate_la(v_w_R, w[i - 1])
 
-    # Überprüfung, ob Lambda im Bereich ist
-    if la_calc < 5:
-        la_calc = 5.0
-    elif la_calc > 50:
-        la_calc = 50.0
-
-    c_p_interp = np.interp(la_calc, la, c_p)  # interpoliert den Wert für cp, mithilfe der Leistungsbeiwert-Schnelllaufzahl-Charakteristik und dem berechneten Lambda
-    c_m = c_p_interp / la_calc
+    c_m = calculate_c_m(la_calc)
 
     # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
     w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
@@ -166,7 +169,6 @@ print('Das Windrad ist nun Richtung', (alpha_G_deg_plot[iteration]), '° gericht
 print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
 print('Die elektrische Leistung des Generators (PE) am Zeitpunkt', iteration, '[s] ist', P_E[i], '[W]')
 print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iteration, '[s] ist', w[i], '[rad/s]')
-
 
 # ----------------------------------
 # POSTPROCESSING
