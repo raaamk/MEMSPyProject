@@ -116,8 +116,8 @@ v_w = weatherdata.saved_windspeed
 w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
-# v_w = 11 # Möglich eigenen Wert einzutippen, sonst auskommentieren
-# w_d = math.radians(310)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+v_w = 11 # Möglich eigenen Wert einzutippen, sonst auskommentieren
+w_d = math.radians(0)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 
 
 # ----------------------------------
