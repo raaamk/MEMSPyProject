@@ -72,9 +72,9 @@ M_B = 0  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
 # Input
-T = 1  # Zeit/Abtastrate
-iteration = 1000  # Anzahl Iterationen
-v_w = 300  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+T = 0.01  # Zeit/Abtastrate
+iteration = 300000  # Anzahl Iterationen
+v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
@@ -149,7 +149,7 @@ def break_M_B(w_current):
 # PREPROCESSING
 # ----------------------------------
 
-# Aktuelle Wetterdaten holen
+# Aktuelle Winddaten holen
 if get_weather:
     weatherdata = WeatherDataFetcher()
     weatherdata.save_weather_data()
@@ -189,9 +189,9 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
         alpha_G_deg_plot.append(alpha_G_deg[i] % 360)  # Winkel Gondel auf Bereich zwischen 0 und 360 Grad
 
         # Antriebsmoment für Gondel bestimmen
-        if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht und verriegelt (w = 0)
-            w[i] = 0
-            if -91 < delta_current < -89 or 89 < delta_current < 91:  # Anlage wird verriegelt
+        if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht
+            w[i] = 0  # Anlage wird verriegelt
+            if -91 < delta_current < -89 or 89 < delta_current < 91:  # Gondel bleibt bei 90° zu Wind stehen
                 w_G[i] = 0
             elif -180 <= delta_current <= -91 or 0 <= delta_current <= 89:
                 M_G = -1
