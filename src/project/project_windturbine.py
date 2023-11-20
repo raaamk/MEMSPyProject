@@ -108,6 +108,7 @@ def calculate_c_m(la_calc):
     c_p_interp = np.interp(la_calc, la, c_p)  # interpoliert den Wert für cp, mithilfe der Leistungsbeiwert-Schnelllaufzahl-Charakteristik und dem berechneten Lambda
     return c_p_interp / la_calc
 
+
 # Wenn der Winkel zwischen Gondel und Windrichtung >20 oder <-20 ist, wird das Antriebsmoment für die Gondel auf den entsprechenden Wert gesetzt.
 def update_M_G(delta_current):
     delta.append(delta_current)
@@ -120,6 +121,21 @@ def update_M_G(delta_current):
     return M_G
 
 
+# Print aktuelle Windlage
+def print_wind():
+    print('--------------AKTUELLE WINDLAGE--------------')
+    print('Windrichtung:', math.degrees(w_d), '°')
+    print('Windgeschwindigkeit:', v_w, 'm/s')
+    print('')
+
+
+# Print Windradinfos zum Endzeitpunkt
+def print_turbine_info():
+    print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
+    print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
+    print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+
+
 # ----------------------------------
 # PREPROCESSING
 # ----------------------------------
@@ -130,7 +146,6 @@ if get_weather:
     weatherdata.save_weather_data()
     v_w = weatherdata.saved_windspeed
     w_d = weatherdata.saved_winddirection  # in [rad]
-
 
 # ----------------------------------
 # MAINPROCESSING
@@ -183,7 +198,6 @@ if v_w >= 5:
         # Für Erstellung der Plots
         iteration_time.append(T * i)
 
-
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
@@ -193,34 +207,25 @@ if 5 <= v_w <= 25:  # Anlage wird eingeschaltet
     print('--------------ANLAGE--------------')
     print('Anlage wurde eingeschaltet. Windgeschwindigkeit zwischen 5 m/s und 25 m/s.')
     print('')
-    print('--------------AKTUELLE WINDLAGE--------------')
-    print('Windrichtung:', math.degrees(w_d), '°')
-    print('Windgeschwindigkeit:', v_w, 'm/s')
-    print('')
-    print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
-    print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
-    print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+
+    print_wind()
+    print_turbine_info()
+
     print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s')
     print('Elektrische Leistung des Generators (P\u2091\u2097):', P_E[i], 'W')
 elif v_w > 25:  # Anlage wird nicht eingeschaltet über 25 m/s
     print('--------------ANLAGE--------------')
     print('Anlage wurde  nicht eingeschaltet. Windgeschwindigkeit über 25 m/s. Anlage wurde zu 90° aus dem Wind gedreht und verriegelt.')
     print('')
-    print('--------------AKTUELLE WINDLAGE--------------')
-    print('Windrichtung:', math.degrees(w_d), '°')
-    print('Windgeschwindigkeit:', v_w, 'm/s')
-    print('')
-    print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
-    print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
-    print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+
+    print_wind()
+    print_turbine_info()
 elif v_w < 5:  # Anlage wird nicht eingeschaltet unter 5 m/s
     print('--------------ANLAGE--------------')
     print('Anlage wurde nicht eingeschaltet. Windgeschwindigkeit unter 5 m/s. Anlage wurde mechanisch verriegelt.')
     print('')
-    print('--------------AKTUELLE WINDLAGE--------------')
-    print('Windrichtung:', math.degrees(w_d), '°')
-    print('Windgeschwindigkeit:', v_w, 'm/s')
-    print('')
+
+    print_wind()
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
