@@ -86,6 +86,7 @@ w_ab = [0]  # Winkelgeschwindigkeit Abtriebsstrang
 w_G = [0]  # Winkelgeschwindigkeit Gondel
 alpha_G_rad = [0]  # Winkel der Gondel in rad
 alpha_G_deg = [0]  # Winkel der Gondel in degree
+alpha_G_deg_plot = [0] # Winkel der Gondel in degree immer zwischen 0 und 360 Grad für Plot
 iteration_time = [0]  # Zei der Iterationen
 delta = [0]  # Winkel zwischen Gondelausrichtung und Windrichtung
 P_w = [0]  # Windleistung
@@ -111,7 +112,7 @@ w_d = weatherdata.saved_winddirection  # in [rad]
 
 # Eigene Werte zum Testen eintippen
 v_w = 11  # Möglich eigenen Wert einzutippen, sonst auskommentieren
-w_d = math.radians(0)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
+w_d = math.radians(320)  # Möglich eigenen Wert einzutippen, sonst auskommentieren
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
@@ -140,6 +141,7 @@ for i in range(1, iteration + 1):
     w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])
     alpha_G_rad.append(w_G[i] * T + alpha_G_rad[i - 1])  # Berechnet den Winkel der Gondel [rad]
     alpha_G_deg.append(math.degrees(alpha_G_rad[i]))  # Berechnet den Winkel der Gondel [°]
+    alpha_G_deg_plot.append(alpha_G_deg[i] % 360)
 
     # Leistungen berechnen für Generatorstrang
     P_w.append(0.5 * rho_air * math.pi * l_R ** 2 * v_w_R ** 3)  # Berechnet die Windleistung
@@ -150,9 +152,9 @@ for i in range(1, iteration + 1):
     # Wenn der Winkel zwischen Gondel und Windrichtung >20 oder <-20 ist, wird das Antriebsmoment für die Gondel auf den entsprechenden Wert gesetzt.
     delta.append(delta_current)
     if delta_current > 20:
-        M_G = 1
+        M_G = 0.5
     elif delta_current < -20:
-        M_G = -1
+        M_G = -0.5
     else:
         M_G = 0
 
@@ -177,8 +179,8 @@ fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 
 # Plot 1: Winkelgeschwindigkeiten
 axs[0].plot(iteration_time, w, label='Antriebswelle w_0')
-axs[0].plot(iteration_time, w_ab, label='Abtriebswelle w_1')
-axs[0].set_title("Winkelgeschwindigkeiten der An- und Abtriebswelle")
+axs[0].plot(iteration_time, w_G, label='Gondel w_G')
+axs[0].set_title("Winkelgeschwindigkeiten")
 axs[0].set_xlabel("Zeit in Sekunden")
 axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
 axs[0].legend()
@@ -195,10 +197,11 @@ axs[1].legend()
 
 # Plot 3: Wind- und Gondelausrichtung
 axs[2].plot(iteration_time, [math.degrees(w_d)]*len(iteration_time), label='Windrichtung')
-axs[2].plot(iteration_time, alpha_G_deg, label='Gondelrichtung')
+axs[2].plot(iteration_time, alpha_G_deg_plot, label='Gondelrichtung')
 axs[2].set_title("Wind- und Gondelausrichtung")
 axs[2].set_xlabel("Zeit in Sekunden")
 axs[2].set_ylabel("Richtung [°]")
+axs[2].set_yticks(np.arange(0, 396, 36))
 axs[2].legend()
 
 # Einstellungen für das gesamte Diagramm
