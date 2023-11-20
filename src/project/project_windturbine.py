@@ -77,6 +77,8 @@ i_G2 = 1000  # Übersetzung (ins Langsame)
 # Input
 T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
+M_B = 0  # Bremsmoment
+M_G = 0  # Antriebsmoment Gondel
 
 # Output
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
