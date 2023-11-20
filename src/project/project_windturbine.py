@@ -169,16 +169,21 @@ for i in range(1, iteration + 1):
     # Für Erstellung der Plots
     iteration_time.append(T * i)
 
-# Ausgabe wichtiger Werte
-print('Der Wind kommt aus', math.degrees(w_d), '° und ist', v_w, 'm/s schnell.')
-print('Das Windrad ist nun Richtung', (alpha_G_deg_plot[iteration]), '° gerichtet')
-print('Der am Windrad ankommende Wind ist', v_w_R, 'm/s schnell')
-print('Die elektrische Leistung des Generators (PE) am Zeitpunkt', iteration, '[s] ist', P_E[i], '[W]')
-print('Die Winkelgeschwindigkeit des Antriebsstranges ist am Zeitpunkt', iteration, '[s] ist', w[i], '[rad/s]')
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
+
+# Ausgabe wichtiger Werte
+print('--------------AKTUELLE WINDLAGE--------------')
+print('Windrichtung:', math.degrees(w_d), '°')
+print('Windgeschwindigkeit:', v_w, 'm/s')
+print('')
+print('--------------WINDRAD ZUM ENDZEITPUNKT', iteration_time[iteration], 's--------------')
+print('Windradausrichtung:', alpha_G_deg_plot[iteration], '°')
+print('Wirkende Windgeschwindigkeit:', v_w_R, 'm/s')
+print('Winkelgeschwindigkeit Antrieb:', w[i], 'rad/s' )
+print('Elektrische Leistung des Generators (PE):', P_E[i], 'W')
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8))
@@ -187,7 +192,7 @@ fig, axs = plt.subplots(3, 1, figsize=(10, 8))
 axs[0].plot(iteration_time, w, label='Antriebswelle w_0')
 axs[0].plot(iteration_time, w_G, label='Gondel w_G')
 axs[0].set_title("Winkelgeschwindigkeiten")
-axs[0].set_xlabel("Zeit in Sekunden")
+axs[0].set_xlabel("Zeit [s]")
 axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
 axs[0].legend()
 
@@ -197,7 +202,7 @@ axs[1].plot(iteration_time, P_M, label='P_M')
 axs[1].plot(iteration_time, P_E, label='P_E')
 axs[1].plot(iteration_time, P_G, label='P_G')
 axs[1].set_title("Leistungen")
-axs[1].set_xlabel("Zeit in Sekunden")
+axs[1].set_xlabel("Zeit [s]")
 axs[1].set_ylabel("Leistung [W]")
 axs[1].legend()
 
@@ -205,7 +210,7 @@ axs[1].legend()
 axs[2].plot(iteration_time, [math.degrees(w_d)] * len(iteration_time), label='Windrichtung')
 axs[2].plot(iteration_time, alpha_G_deg_plot, label='Gondelrichtung')
 axs[2].set_title("Wind- und Gondelausrichtung")
-axs[2].set_xlabel("Zeit in Sekunden")
+axs[2].set_xlabel("Zeit [s]")
 axs[2].set_ylabel("Richtung [°]")
 axs[2].set_yticks(np.arange(0, 400, 40))
 axs[2].legend()
