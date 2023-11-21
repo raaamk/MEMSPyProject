@@ -143,7 +143,7 @@ def print_turbine_info():
 # Bremsmoment bestimmen
 def break_M_B(w_current):
     if w_current * 60 / (2 * math.pi) > 40:  # Wenn Umdrehungen pro Minute größer als 40
-        M_B = 10 ** 6  # Umso geringer das Bremsmoment, desto öfter wird das Bremsmoment angesetzt an der Antriebswelle
+        M_B = 10 ** 7  # Umso geringer das Bremsmoment, desto öfter wird das Bremsmoment angesetzt an der Antriebswelle
     else:
         M_B = 0
     return M_B
