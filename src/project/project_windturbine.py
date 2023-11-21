@@ -73,9 +73,9 @@ M_G = 0  # Antriebsmoment Gondel
 
 # Input
 T = 1  # Zeit/Abtastrate
-iteration = 1000  # Anzahl Iterationen
-v_w = 22.4  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+iteration = 300000  # Anzahl Iterationen
+v_w = 20  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(180)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
@@ -250,7 +250,7 @@ fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
 
 # Plot 1: Winkelgeschwindigkeiten
 axs[0].plot(iteration_time, w, label='Antriebswelle \u03C9_0')
-axs[0].plot(iteration_time, w_G, label='Gondel \u03C9_G')
+axs[0].plot(iteration_time, w_G, label='Gondel \u03C9_G')  # Winkelgeschwindigkeit Gondel; sehr gering, in Plot nicht gut erkennbar
 axs[0].set_title("Winkelgeschwindigkeiten")
 axs[0].set_xlabel("Zeit [s]")
 axs[0].set_ylabel("Winkelgeschwindigkeit [rad/s]")
@@ -260,7 +260,7 @@ axs[0].legend()
 axs[1].plot(iteration_time, P_W, label='P_W')  # Windleistung
 axs[1].plot(iteration_time, P_M, label='P_M')  # Mechanische Leistung Generator
 axs[1].plot(iteration_time, P_E, label='P_E')  # Elektrische Leistung Generator
-axs[1].plot(iteration_time, P_G, label='P_G')  # Elektrische Leistung Gondelmotor
+axs[1].plot(iteration_time, P_G, label='P_G')  # Elektrische Leistung Gondelmotor; sehr gering, in Plot nicht gut erkennbar
 axs[1].set_title("Leistungen")
 axs[1].set_xlabel("Zeit [s]")
 axs[1].set_ylabel("Leistung [W]")
