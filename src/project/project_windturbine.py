@@ -74,7 +74,7 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 1  # Zeit/Abtastrate
 iteration = 1000  # Anzahl Iterationen
-v_w = 24  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 25  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
@@ -180,12 +180,12 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
         if v_w_R < 0:
             v_w_R = 0
 
+        # Bremsmoment, wenn RPM > 40
+        M_B = break_M_B(w[i - 1])
+        M_B_arr.append(M_B)  # Fügt Bremsmoment zum Array hinzu
+
         # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
         w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
-
-        # Bremsmoment, wenn RPM > 40
-        M_B = break_M_B(w[i])
-        M_B_arr.append(M_B)  # Fügt Bremsmoment zum Array hinzu
 
         # Gondelnachführung
         w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
