@@ -72,11 +72,11 @@ M_B = [0]  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
 # Input
-T = 1  # Zeit/Abtastrate
+T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 26  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-w_d = math.radians(180)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
-get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
+v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+get_weather = True  # Wenn True, aktuelle Winddaten werden verwendet
 
 # Output
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
