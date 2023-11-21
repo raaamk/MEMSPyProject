@@ -72,9 +72,9 @@ M_B = 0  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
 # Input
-T = 0.01  # Zeit/Abtastrate
-iteration = 300000  # Anzahl Iterationen
-v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+T = 1  # Zeit/Abtastrate
+iteration = 1000  # Anzahl Iterationen
+v_w = 24  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
@@ -82,11 +82,15 @@ get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 w = [0]  # Winkelgeschwindigkeit Antriebsstrang
 w_ab = [0]  # Winkelgeschwindigkeit Abtriebsstrang
 w_G = [0]  # Winkelgeschwindigkeit Gondel
+
 alpha_G_rad = [0]  # Winkel der Gondel in rad
 alpha_G_deg = [0]  # Winkel der Gondel in degree
 alpha_G_deg_plot = [0]  # Winkel der Gondel in degree immer zwischen 0 und 360 Grad für Plot
+
 iteration_time = [0]  # Zei der Iterationen
 delta = [0]  # Winkel zwischen Gondelausrichtung und Windrichtung
+M_B_arr = [0]  # Bremsmoment Array
+
 P_W = [0]  # Windleistung
 P_M = [0]  # Mechanische Leistung des Generators
 P_E = [0]  # Elektrische Leistung des Generators
@@ -139,7 +143,7 @@ def print_turbine_info():
 # Bremsmoment bestimmen
 def break_M_B(w_current):
     if w_current * 60 / (2 * math.pi) > 40:  # Wenn Umdrehungen pro Minute größer als 40
-        M_B = 10 ** 7
+        M_B = 10 ** 6  # Umso geringer das Bremsmoment, desto öfter wird das Bremsmoment angesetzt an der Antriebswelle
     else:
         M_B = 0
     return M_B
@@ -181,6 +185,7 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
 
         # Bremsmoment, wenn RPM > 40
         M_B = break_M_B(w[i])
+        M_B_arr.append(M_B)  # Fügt Bremsmoment zum Array hinzu
 
         # Gondelnachführung
         w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
@@ -243,7 +248,7 @@ elif v_w < 5:  # Anlage wird nicht eingeschaltet unter 5 m/s
     print_wind()
 
 # Figure erstellen für Diagramme
-fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
+fig, axs = plt.subplots(4, 1, figsize=(10, 8), sharex=True)
 
 # Plot 1: Winkelgeschwindigkeiten
 axs[0].plot(iteration_time, w, label='Antriebswelle \u03C9_0')
@@ -271,6 +276,13 @@ axs[2].set_xlabel("Zeit [s]")
 axs[2].set_ylabel("Richtung [°]")
 axs[2].set_yticks(np.arange(0, 400, 40))
 axs[2].legend()
+
+# Plot 4: Bremsmoment
+axs[3].plot(iteration_time, M_B_arr, label='Bremsmoment')
+axs[3].set_title("Bremse")
+axs[3].set_xlabel("Zeit [s]")
+axs[3].set_ylabel("Moment [Nm]")
+axs[3].legend()
 
 # Einstellungen für das gesamte Diagramm
 plt.tight_layout()
