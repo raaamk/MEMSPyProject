@@ -68,13 +68,13 @@ b_G = 2.2 * 10 ** 4  # Reibbeiwert der Gondellagerung
 i_G2 = 1000  # Übersetzung (ins Langsame)
 
 # Initialisierung
-M_B = 0  # Bremsmoment
+M_B = [0]  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
 # Input
 T = 1  # Zeit/Abtastrate
 iteration = 1000  # Anzahl Iterationen
-v_w = 25  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 22.4  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
@@ -89,7 +89,6 @@ alpha_G_deg_plot = [0]  # Winkel der Gondel in degree immer zwischen 0 und 360 G
 
 iteration_time = [0]  # Zei der Iterationen
 delta = [0]  # Winkel zwischen Gondelausrichtung und Windrichtung
-M_B_arr = [0]  # Bremsmoment Array
 
 P_W = [0]  # Windleistung
 P_M = [0]  # Mechanische Leistung des Generators
@@ -181,11 +180,10 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
             v_w_R = 0
 
         # Bremsmoment, wenn RPM > 40
-        M_B = break_M_B(w[i - 1])
-        M_B_arr.append(M_B)  # Fügt Bremsmoment zum Array hinzu
+        M_B.append(break_M_B(w[i - 1]))
 
         # Berechnet die aktuelle Winkelgeschwindigkeit des Antriebsstrangs [rad/s]
-        w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B)) + w[i - 1])
+        w.append((T / (J_0 + (J_1 / i_G1 ** 2)) * (c_m * 0.5 * rho_air * math.pi * l_R ** 3 * v_w_R ** 2 - w[i - 1] * (b_0 + (b_1 / i_G1 ** 2) + (K_m / i_G1 ** 2)) - M_B[i])) + w[i - 1])
 
         # Gondelnachführung
         w_G.append((M_G * 1000 * T) / J_G - (b_G * w_G[i - 1] * T) / J_G + w_G[i - 1])  # Berechnet die Winkelgeschwindigkeit der Gondel [rad/s]
@@ -278,7 +276,7 @@ axs[2].set_yticks(np.arange(0, 400, 40))
 axs[2].legend()
 
 # Plot 4: Bremsmoment
-axs[3].plot(iteration_time, M_B_arr, label='Bremsmoment')
+axs[3].plot(iteration_time, M_B, label='Bremsmoment')
 axs[3].set_title("Bremse")
 axs[3].set_xlabel("Zeit [s]")
 axs[3].set_ylabel("Moment [Nm]")
