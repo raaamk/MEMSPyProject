@@ -74,7 +74,7 @@ M_G = 0  # Antriebsmoment Gondel
 # Input
 T = 1  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
-v_w = 20  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
+v_w = 26  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(180)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 get_weather = False  # Wenn True, aktuelle Winddaten werden verwendet
 
@@ -194,11 +194,11 @@ if v_w >= 5:  # Windgeschwindigkeit muss mindestens 5 m/s betragen
         # Antriebsmoment für Gondel bestimmen
         if v_w > 25:  # Wenn Windgeschwindigkeit über 25 m/s, Anlage wird aus Wind gedreht
             w[i] = 0  # Anlage wird verriegelt
-            if -91 < delta_current < -89 or 89 < delta_current < 91:  # Gondel bleibt bei 90° zu Wind stehen
+            if -90.1 < delta_current < -89.9 or 89.9 < delta_current < 90.1:  # Gondel bleibt bei 90° zu Wind stehen, genauer zwischen 89.9° und 90.1°, daher manchmal minimale Windleistung
                 w_G[i] = 0
-            elif -180 <= delta_current <= -91 or 0 <= delta_current <= 89:
+            elif -180 <= delta_current <= -90.1 or 0 <= delta_current <= 89.9:
                 M_G = -1
-            elif -89 <= delta_current <= 0 or 91 <= delta_current <= 180:
+            elif -89.9 <= delta_current <= 0 or 90.1 <= delta_current <= 180:
                 M_G = 1
         else:  # Sonst Gondel normal zum Wind hindrehen
             M_G = update_M_G(delta_current)
