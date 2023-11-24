@@ -156,7 +156,7 @@ def break_M_B(w_current):
 if get_weather:
     weatherdata = WeatherDataFetcher()
     weatherdata.save_weather_data()
-    v_w = weatherdata.saved_windspeed
+    v_w = weatherdata.saved_windspeed / 3.6
     w_d = weatherdata.saved_winddirection  # in [rad]
 
 
