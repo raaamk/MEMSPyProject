@@ -12,7 +12,7 @@ DESCRIPTION
 Dieses Programm modelliert eine Windkraftanlage mit Generatorstrang und Windnachführung.
 
 FILE
-.../project_windturbine.py
+.../project1_windturbine.py
 
 ASSOCIATED FILES
 .../WeatherDataFetcher.py
@@ -72,7 +72,7 @@ M_B = [0]  # Bremsmoment
 M_G = 0  # Antriebsmoment Gondel
 
 # Input
-T = 1  # Zeit/Abtastrate
+T = 0.01  # Zeit/Abtastrate
 iteration = 300000  # Anzahl Iterationen
 v_w = 11  # Windgeschwindigkeit; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
 w_d = math.radians(0)  # Windrichtung; Möglich eigenen Wert einzutippen, nur aktiv, wenn get_weather = False
