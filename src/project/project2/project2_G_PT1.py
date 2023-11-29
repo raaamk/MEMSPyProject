@@ -12,7 +12,7 @@ DESCRIPTION
 -
 
 FILE
-.../project2.py
+.../project2_G_PT1.py
 
 ASSOCIATED FILES
 -
