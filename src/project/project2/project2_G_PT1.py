@@ -39,14 +39,14 @@ import control as co
 import control.matlab as com
 import numpy as np
 import matplotlib.pyplot as plt
-
+from gekko import GEKKO
 
 # ----------------------------------
 # PARAMETERS
 # ----------------------------------
 
 # Definieren Sie die Übertragungsfunktion
-num = [8.3 * 10**(-8)]
+num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 system = co.tf(num, den)
 
@@ -75,8 +75,11 @@ y, t_out, x_out = com.lsim(system, u, t)
 
 # Ausgangssignal mit Rauschen überlagern
 std_dev = 0.01 * np.std(y)  # Standardabweichung von 1 % des Ausgangswerts
-noise = np.random.normal(0, std_dev, y.shape) # Mittelwert des Rauschens ist 0, Standardabweichung ist das 1 % des max. Ausgangswertes, die Form ist wie die des Vektors y.
+noise = np.random.normal(0, std_dev, y.shape)  # Mittelwert des Rauschens ist 0, Standardabweichung ist das 1 % des max. Ausgangswertes, die Form ist wie die des Vektors y.
 y_with_noise = y + noise
+
+m = GEKKO()
+ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas')
 
 # ----------------------------------
 # POSTPROCESSING
@@ -85,6 +88,7 @@ y_with_noise = y + noise
 # Plotten Sie die Systemantwort mit Rauschen
 plt.plot(t_out, y_with_noise, label='Mit Rauschen')
 plt.plot(t_out, y, label='Ohne Rauschen', linestyle='--')
+plt.plot(t_out, ypred, label='Identifiziertes Ausgangssignal')
 plt.xlabel('Zeit')
 plt.ylabel('Systemantwort')
 plt.title('Systemantwort mit gaußverteiltem weißen Rauschen')
