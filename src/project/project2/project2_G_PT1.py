@@ -48,7 +48,6 @@ from gekko import GEKKO
 # Definieren Sie die Übertragungsfunktion
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
-system = co.tf(num, den)
 
 # Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
 t = np.arange(0, 30, 0.01)
@@ -65,12 +64,15 @@ u = np.ones_like(t)
 # PREPROCESSING
 # ----------------------------------
 
+# Zähler und Nenner zusammenfügen zu Übertragungsfunktion
+system = co.tf(num, den)
+
 
 # ----------------------------------
 # MAINPROCESSING
 # ----------------------------------
 
-# Main
+# System linear simulieren
 y, t_out, x_out = com.lsim(system, u, t)
 
 # Ausgangssignal mit Rauschen überlagern
