@@ -74,7 +74,7 @@ u = np.ones_like(t)
 y, t_out, x_out = com.lsim(system, u, t)
 
 # Ausgangssignal mit Rauschen überlagern
-std_dev = 0.01 * np.max(y)  # Standardabweichung von 1 % des maximalen Ausgangswerts
+std_dev = 0.01 * np.std(y)  # Standardabweichung von 1 % des Ausgangswerts
 noise = np.random.normal(0, std_dev, y.shape) # Mittelwert des Rauschens ist 0, Standardabweichung ist das 1 % des max. Ausgangswertes, die Form ist wie die des Vektors y.
 y_with_noise = y + noise
 
