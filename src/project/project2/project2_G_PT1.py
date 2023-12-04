@@ -57,6 +57,10 @@ t = np.arange(0, 30, 0.01)
 # Eingangssignal definieren 1, solang wie t
 u = np.ones_like(t)
 
+# Koeffizienten bei SysId
+na = 1  # Anzahl der Ausgabekoeffizienten
+nb = 1  # Anzahl der Eingabekoeffizienten
+
 # ----------------------------------
 # FUNCTIONS
 # ----------------------------------
@@ -84,7 +88,7 @@ y_with_noise = y + noise
 
 # Systemidentifikation durchführen
 m = GEKKO()
-ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas')
+ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas', na=na, nb=nb)
 
 # Berechnung des relativen Fehlers für jedes Wertepaar
 for true_y, pred_y in zip(y_with_noise, ypred):
