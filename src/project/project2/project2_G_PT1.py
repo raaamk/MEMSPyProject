@@ -84,17 +84,36 @@ y_with_noise = y + noise
 m = GEKKO()
 ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas')
 
+# Berechnung des relativen Fehlers für jedes Wertepaar
+relative_errors = []
+for true_y, pred_y in zip(y_with_noise, ypred):
+    error = abs(true_y - pred_y) / abs(true_y) * 100
+    relative_errors.append(error)
+
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
-# Plotten Sie die Systemantwort mit Rauschen
-plt.plot(t_out, y_with_noise, label='Ausgangssignal mit Rauschen')
-plt.plot(t_out, y, label='Ausgangssignal', linestyle='--')
-plt.plot(t_out, ypred, label='Identifiziertes Ausgangssignal')
-plt.xlabel('Zeit [s]')
-plt.ylabel('Systemantwort')
-plt.title('Systemantwort mit gaußverteiltem weißen Rauschen')
+# Figure erstellen für Diagramme
+fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+
+# Plott 1: Systemantwort mit Rauschen
+axs[0].plot(t_out, y_with_noise, label='Ausgangssignal mit Rauschen')
+axs[0].plot(t_out, y, label='Ausgangssignal', linestyle='--')
+axs[0].plot(t_out, ypred, label='Identifiziertes Ausgangssignal')
+axs[0].set_xlabel('Zeit [s]')
+axs[0].set_ylabel('Systemantwort')
+axs[0].set_title('Systemantwort mit gaußverteiltem weißen Rauschen')
+
+# Plot 2: Relativer Fehler
+axs[1].plot(t_out, relative_errors, label='Relativer Fehler')
+axs[1].set_xlabel('Zeit [s]')
+axs[1].set_ylabel('Prozent [%]')
+axs[1].set_title('Fehler')
+
+# Allgemeine Plot-Einstellungen
 plt.legend()
 plt.grid(True)
 plt.show()
+
+
