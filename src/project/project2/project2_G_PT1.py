@@ -49,6 +49,8 @@ from gekko import GEKKO
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 
+relative_errors = []
+
 # Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
 t = np.arange(0, 30, 0.01)
 
@@ -85,14 +87,20 @@ m = GEKKO()
 ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas')
 
 # Berechnung des relativen Fehlers für jedes Wertepaar
-relative_errors = []
 for true_y, pred_y in zip(y_with_noise, ypred):
     error = abs(true_y - pred_y) / abs(true_y) * 100
     relative_errors.append(error)
 
+# Berechnung des RMSE aus dem relativen Fehler
+relative_errors = np.array(relative_errors)
+rmse = np.sqrt(np.mean(relative_errors**2))
+
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
+
+# Print RMSE
+print('RMSE:', rmse)
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
