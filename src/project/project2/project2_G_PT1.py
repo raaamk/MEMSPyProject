@@ -47,22 +47,22 @@ import pandas as pd
 # PARAMETERS
 # ----------------------------------
 
-# Definieren Sie die Übertragungsfunktion
+# Definieren der Übertragungsfunktion für Aufgabe 1, 2 & 3
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
-
-n = 3000
-
-i = 0
-absoluter_Fehler = np.zeros(n)
-relativer_Fehler = np.zeros(n)
-RMSE_Zaehler = 0
 
 # Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
 t = np.arange(0, 30, 0.01)
 
 # Eingangssignal definieren 1, solang wie t
 u = np.ones_like(t)
+
+# Variablen für Aufgabe 4 & 5
+n = len(t)  # Anzahl der Datenpunkte von Zeitvektor
+i = 0
+absoluter_Fehler = np.zeros(n)
+relativer_Fehler = np.zeros(n)
+RMSE_Zaehler = 0
 
 # Koeffizienten bei SysId
 na = 1  # Anzahl der Ausgabekoeffizienten
@@ -103,7 +103,7 @@ y_with_noise = y + noise
 m = GEKKO()
 ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas', na=na, nb=nb)
 
-#
+# Relativer & absoluter Fehler und RMSE berechnen für Aufgabe 3
 while i < n:
     absoluter_Fehler[i] = abs(y[i] - ypred[i])
     if y[i] != 0:
