@@ -127,7 +127,7 @@ G = co.tf(num_data, den_data)
 
 # Print
 print('RMSE:', rmse)
-print(G)
+print('Übertragungsfunktion aus eingelesenen Daten:', G)
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
