@@ -15,7 +15,7 @@ FILE
 .../project2_G_PT1.py
 
 ASSOCIATED FILES
--
+.../mems_identification_data.csv
 
 AUTHOR(S)
 Mark Janitschek
@@ -31,6 +31,8 @@ LAST MODIFIED
 
 Copyright 2023 - TH Köln
 """
+
+
 # ----------------------------------
 # DEPENDENCIES
 # ----------------------------------
@@ -42,6 +44,7 @@ import matplotlib.pyplot as plt
 from gekko import GEKKO
 import math
 import pandas as pd
+
 
 # ----------------------------------
 # PARAMETERS
@@ -76,6 +79,7 @@ M = np.array([(-0, -0, -0, 0, 0),
               (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[4, 0], daten[3, 0]), (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[5, 0], daten[4, 0]), (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[6, 0], daten[5, 0]), (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[7, 0], daten[6, 0]),
               (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[8, 0], daten[7, 0]), (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[9, 0], daten[8, 0]), (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[10, 0], daten[9, 0]), (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[11, 0], daten[10, 0])])
 
+
 # ----------------------------------
 # AUFGABE 1, 2 & 3
 # ----------------------------------
@@ -105,6 +109,7 @@ while i < n:
 
 rmse = math.sqrt(RMSE_Zaehler / n)
 
+
 # ----------------------------------
 # AUFGABE 4 & 5
 # ----------------------------------
@@ -116,6 +121,7 @@ num_data = np.array([b1, b2])
 den_data = np.array([a1, a2, a3])
 
 G_data = co.tf(num_data, den_data)
+
 
 # ----------------------------------
 # POSTPROCESSING
