@@ -113,7 +113,7 @@ while i < n:
 
 rmse = math.sqrt(RMSE_Zaehler / n)
 
-# Aufgabe 5
+# Aufgabe 5, Eingang m=2, Ausgang p=3
 a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
 
 num_data = np.array([b1, b2])
