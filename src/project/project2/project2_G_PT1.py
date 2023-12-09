@@ -75,21 +75,13 @@ M = np.array([(-0, -0, -0, 0, 0),
               (-daten[0, 1], -0, -0, daten[0, 0], 0), (-daten[1, 1], -daten[0, 1], -0, daten[1, 0], daten[0, 0]), (-daten[2, 1], -daten[1, 1], -daten[0, 1], daten[2, 0], daten[1, 0]), (-daten[3, 1], -daten[2, 1], -daten[1, 1], daten[3, 0], daten[2, 0]),
               (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[4, 0], daten[3, 0]), (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[5, 0], daten[4, 0]), (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[6, 0], daten[5, 0]), (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[7, 0], daten[6, 0]),
               (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[8, 0], daten[7, 0]), (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[9, 0], daten[8, 0]), (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[10, 0], daten[9, 0]), (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[11, 0], daten[10, 0])])
-# ----------------------------------
-# FUNCTIONS
-# ----------------------------------
-
 
 # ----------------------------------
-# PREPROCESSING
+# AUFGABE 1, 2 & 3
 # ----------------------------------
 
 # Zähler und Nenner zusammenfügen zu Übertragungsfunktion
 system = co.tf(num, den)
-
-# ----------------------------------
-# MAINPROCESSING
-# ----------------------------------
 
 # System linear simulieren
 y, t_out, x_out = com.lsim(system, u, t)
@@ -113,7 +105,11 @@ while i < n:
 
 rmse = math.sqrt(RMSE_Zaehler / n)
 
-# Aufgabe 5, Eingang m=2, Ausgang p=3
+# ----------------------------------
+# AUFGABE 4 & 5
+# ----------------------------------
+
+# Parameter bestimmen
 a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
 
 num_data = np.array([b1, b2])
