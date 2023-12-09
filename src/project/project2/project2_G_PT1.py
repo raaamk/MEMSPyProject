@@ -40,6 +40,7 @@ import control.matlab as com
 import numpy as np
 import matplotlib.pyplot as plt
 from gekko import GEKKO
+import math
 
 # ----------------------------------
 # PARAMETERS
@@ -49,7 +50,12 @@ from gekko import GEKKO
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 
-relative_errors = []
+n = 3000
+
+i = 0
+absoluter_Fehler = np.zeros(n)
+relativer_Fehler = np.zeros(n)
+RMSE_Zaehler = 0
 
 # Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
 t = np.arange(0, 30, 0.01)
@@ -82,7 +88,7 @@ system = co.tf(num, den)
 y, t_out, x_out = com.lsim(system, u, t)
 
 # Ausgangssignal mit Rauschen überlagern
-std_dev = 0.01 * np.std(y)  # Standardabweichung von 1 % des Ausgangswerts
+std_dev = 0.01 * y  # Standardabweichung von 1 % des Ausgangswerts
 noise = np.random.normal(0, std_dev, y.shape)  # Mittelwert des Rauschens ist 0, Standardabweichung ist das 1 % des max. Ausgangswertes, die Form ist wie die des Vektors y.
 y_with_noise = y + noise
 
@@ -90,14 +96,15 @@ y_with_noise = y + noise
 m = GEKKO()
 ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas', na=na, nb=nb)
 
-# Berechnung des relativen Fehlers für jedes Wertepaar
-for true_y, pred_y in zip(y_with_noise, ypred):
-    error = abs(true_y - pred_y) / abs(true_y) * 100
-    relative_errors.append(error)
+#
+while i < n:
+    absoluter_Fehler[i] = abs(y[i] - ypred[i])
+    if y[i] != 0:
+        relativer_Fehler[i] = absoluter_Fehler[i]/y[i]
+    RMSE_Zaehler = RMSE_Zaehler + absoluter_Fehler[i]**2
+    i = i+1
 
-# Berechnung des RMSE aus dem relativen Fehler
-relative_errors = np.array(relative_errors)
-rmse = np.sqrt(np.mean(relative_errors**2))
+rmse = math.sqrt(RMSE_Zaehler/n)
 
 # ----------------------------------
 # POSTPROCESSING
@@ -107,7 +114,7 @@ rmse = np.sqrt(np.mean(relative_errors**2))
 print('RMSE:', rmse)
 
 # Figure erstellen für Diagramme
-fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
 
 # Plott 1: Systemantwort mit Rauschen
 axs[0].plot(t_out, y_with_noise, label='Ausgangssignal mit Rauschen')
@@ -116,16 +123,25 @@ axs[0].plot(t_out, ypred, label='Identifiziertes Ausgangssignal')
 axs[0].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Systemantwort')
 axs[0].set_title('Systemantwort mit gaußverteiltem weißen Rauschen')
+axs[0].legend()
 
 # Plot 2: Relativer Fehler
-axs[1].plot(t_out, relative_errors, label='Relativer Fehler')
+axs[1].plot(t_out, relativer_Fehler, label='Relativer Fehler')
 axs[1].set_xlabel('Zeit [s]')
 axs[1].set_ylabel('Prozent [%]')
-axs[1].set_title('Fehler')
+axs[1].set_title('Relativer Fehler')
+axs[1].legend()
+
+# Plot 3: Absoluter Fehler
+axs[2].plot(t_out, absoluter_Fehler, label='Absoluter Fehler')
+axs[2].set_xlabel('Zeit [s]')
+axs[2].set_ylabel('Prozent [%]')
+axs[2].set_title('Absoluter Fehler')
+axs[2].legend()
 
 # Allgemeine Plot-Einstellungen
-plt.legend()
 plt.grid(True)
+plt.tight_layout()
 plt.show()
 
 
