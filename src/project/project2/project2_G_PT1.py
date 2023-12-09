@@ -41,6 +41,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from gekko import GEKKO
 import math
+import pandas as pd
 
 # ----------------------------------
 # PARAMETERS
@@ -67,6 +68,13 @@ u = np.ones_like(t)
 na = 1  # Anzahl der Ausgabekoeffizienten
 nb = 1  # Anzahl der Eingabekoeffizienten
 
+# Daten einlesen und Matrix erstellen
+df = pd.read_csv('mems_identification_data.csv', sep=',', header=0)
+daten = np.array(df)
+M = np.array([(-0, -0, -0, 0, 0),
+              (-daten[0, 1], -0, -0, daten[0, 0], 0), (-daten[1, 1], -daten[0, 1], -0, daten[1, 0], daten[0, 0]), (-daten[2, 1], -daten[1, 1], -daten[0, 1], daten[2, 0], daten[1, 0]), (-daten[3, 1], -daten[2, 1], -daten[1, 1], daten[3, 0], daten[2, 0]),
+              (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[4, 0], daten[3, 0]), (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[5, 0], daten[4, 0]), (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[6, 0], daten[5, 0]), (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[7, 0], daten[6, 0]),
+              (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[8, 0], daten[7, 0]), (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[9, 0], daten[8, 0]), (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[10, 0], daten[9, 0]), (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[11, 0], daten[10, 0])])
 # ----------------------------------
 # FUNCTIONS
 # ----------------------------------
@@ -78,7 +86,6 @@ nb = 1  # Anzahl der Eingabekoeffizienten
 
 # Zähler und Nenner zusammenfügen zu Übertragungsfunktion
 system = co.tf(num, den)
-
 
 # ----------------------------------
 # MAINPROCESSING
@@ -100,18 +107,27 @@ ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas', na=na, nb=nb)
 while i < n:
     absoluter_Fehler[i] = abs(y[i] - ypred[i])
     if y[i] != 0:
-        relativer_Fehler[i] = absoluter_Fehler[i]/y[i]
-    RMSE_Zaehler = RMSE_Zaehler + absoluter_Fehler[i]**2
-    i = i+1
+        relativer_Fehler[i] = absoluter_Fehler[i] / y[i]
+    RMSE_Zaehler = RMSE_Zaehler + absoluter_Fehler[i] ** 2
+    i = i + 1
 
-rmse = math.sqrt(RMSE_Zaehler/n)
+rmse = math.sqrt(RMSE_Zaehler / n)
+
+# Aufgabe 5
+a1, a2, a3, b1, b2 = np.linalg.lstsq(M, df['y'], rcond=None)[0]
+
+num_data = np.array([b1, b2])
+den_data = np.array([a1, a2, a3])
+
+G = co.tf(num_data, den_data)
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
-# Print RMSE
+# Print
 print('RMSE:', rmse)
+print(G)
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
@@ -143,5 +159,3 @@ axs[2].legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
-
