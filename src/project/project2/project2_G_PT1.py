@@ -119,7 +119,7 @@ a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
 num_data = np.array([b1, b2])
 den_data = np.array([a1, a2, a3])
 
-G = co.tf(num_data, den_data)
+G_data = co.tf(num_data, den_data)
 
 # ----------------------------------
 # POSTPROCESSING
@@ -127,7 +127,7 @@ G = co.tf(num_data, den_data)
 
 # Print
 print('RMSE:', rmse)
-print('Übertragungsfunktion aus eingelesenen Daten:', G)
+print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
 
 # Figure erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
