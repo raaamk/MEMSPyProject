@@ -186,10 +186,10 @@ axs[0].set_title('Systemantwort')
 axs[0].legend()
 
 # Plot 2: Systemantwort von Aufgabe 1, 2 & 3
-axs[1].plot(t_out_c2d, y_c2d, label='erst zeitkontinuierlich, dann zeitdiskretes Ausgangssignal')
+axs[1].plot(t_out_c2d, y_c2d, label='Ausgangssignal')
 axs[1].set_xlabel('Zeit [s]')
 axs[1].set_ylabel('Systemantwort')
-axs[1].set_title('Systemantwort (Aufgabe 4 & 5)')
+axs[1].set_title('Systemantwort von Aufgabe 1')
 axs[1].legend()
 
 # Allgemeine Figure-Einstellungen
