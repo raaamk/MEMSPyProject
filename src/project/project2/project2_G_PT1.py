@@ -140,7 +140,6 @@ y_c2d, t_out_c2d, x_out_c2d = com.lsim(system_c2d, u, t)
 # Print
 print('RMSE:', rmse)
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
-print(system_c2d)
 
 # Grid aktivieren für Plots
 plt.rcParams['axes.grid'] = True
@@ -183,10 +182,10 @@ fig.suptitle('Aufgabe 4 & 5', fontsize=16)
 axs[0].plot(t_out_data, y_data, label='zeitdiskretes Ausgangssignal')
 axs[0].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Systemantwort')
-axs[0].set_title('Systemantwort (Aufgabe 4 & 5)')
+axs[0].set_title('Systemantwort')
 axs[0].legend()
 
-# Plot 2: Systemantwort von Aufgabe 4 & 5
+# Plot 2: Systemantwort von Aufgabe 1, 2 & 3
 axs[1].plot(t_out_c2d, y_c2d, label='erst zeitkontinuierlich, dann zeitdiskretes Ausgangssignal')
 axs[1].set_xlabel('Zeit [s]')
 axs[1].set_ylabel('Systemantwort')
