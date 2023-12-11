@@ -118,10 +118,19 @@ a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
 
 # Berechnete Parameter in Arrays
 num_data = np.array([b1, b2])
-den_data = np.array([a1, a2, a3])
+den_data = np.array([1, a1, a2, a3])
 
-# Übertragungsfunktion erstellen
-G_data = co.tf(num_data, den_data)
+# Übertragungsfunktion erstellen mit Zeitkonstante 0.01
+G_data = co.tf(num_data, den_data, 0.01)
+
+# System, welches aus den Data erstellt wurde, linear simulieren
+y_data, t_out_data, x_out_data = com.lsim(G_data, u, t)
+
+# System aus Aufgabe 1 von kontinuierlich in zeitdiskret umgewandelt
+system_c2d = com.c2d(system, 0.01, method='zoh')
+
+# Umgewandelte zeitdiskrete System nochmal linear simuliert
+y_c2d, t_out_c2d, x_out_c2d = com.lsim(system_c2d, u, t)
 
 
 # ----------------------------------
@@ -131,17 +140,22 @@ G_data = co.tf(num_data, den_data)
 # Print
 print('RMSE:', rmse)
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
+print(system_c2d)
 
-# Figure erstellen für Diagramme
+# Grid aktivieren für Plots
+plt.rcParams['axes.grid'] = True
+
+# Figure 1 für Aufgabe 1, 2 & 3 erstellen für Diagramme
 fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
+fig.suptitle('Aufgabe 1, 2 & 3', fontsize=16)
 
-# Plott 1: Systemantwort mit Rauschen
+# Plott 1: Systemantwort mit Rauschen von Aufgabe 1, 2 % 3
 axs[0].plot(t_out, y_with_noise, label='Ausgangssignal mit Rauschen')
 axs[0].plot(t_out, y, label='Ausgangssignal', linestyle='--')
 axs[0].plot(t_out, ypred, label='Identifiziertes Ausgangssignal')
 axs[0].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Systemantwort')
-axs[0].set_title('Systemantwort mit gaußverteiltem weißen Rauschen')
+axs[0].set_title('Systemantwort mit gaußverteiltem weißen Rauschen (Aufgabe 1, 2 & 3)')
 axs[0].legend()
 
 # Plot 2: Relativer Fehler
@@ -154,11 +168,33 @@ axs[1].legend()
 # Plot 3: Absoluter Fehler
 axs[2].plot(t_out, absoluter_Fehler, label='Absoluter Fehler')
 axs[2].set_xlabel('Zeit [s]')
-axs[2].set_ylabel('Prozent [%]')
+axs[2].set_ylabel('Fehler')
 axs[2].set_title('Absoluter Fehler')
 axs[2].legend()
 
-# Allgemeine Plot-Einstellungen
-plt.grid(True)
+# Allgemeine Figure-Einstellungen
 plt.tight_layout()
+
+# Figure 2 für Aufgabe 4 & 5 erstellen für Diagramme
+fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+fig.suptitle('Aufgabe 4 & 5', fontsize=16)
+
+# Plot 1: Systemantwort von Aufgabe 4 & 5
+axs[0].plot(t_out_data, y_data, label='zeitdiskretes Ausgangssignal')
+axs[0].set_xlabel('Zeit [s]')
+axs[0].set_ylabel('Systemantwort')
+axs[0].set_title('Systemantwort (Aufgabe 4 & 5)')
+axs[0].legend()
+
+# Plot 2: Systemantwort von Aufgabe 4 & 5
+axs[1].plot(t_out_c2d, y_c2d, label='erst zeitkontinuierlich, dann zeitdiskretes Ausgangssignal')
+axs[1].set_xlabel('Zeit [s]')
+axs[1].set_ylabel('Systemantwort')
+axs[1].set_title('Systemantwort (Aufgabe 4 & 5)')
+axs[1].legend()
+
+# Allgemeine Figure-Einstellungen
+plt.tight_layout()
+
+# Diagramme zeigen
 plt.show()
