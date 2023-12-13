@@ -138,20 +138,16 @@ a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
 num_data = np.array([b1, b2])
 den_data = np.array([1, a1, a2, a3])
 
-# Übertragungsfunktion erstellen mit Zeitkonstante 0.01
-G_data = co.tf(num_data, den_data, 0.01)
-
-# System, welches aus den Data erstellt wurde, linear simulieren
-y_data, t_out_data, x_out_data = com.lsim(G_data, u, t)
-
-# Übertragungsfunktion von System 2
-system2 = co.tf(num2, den2)
+# Übertragungsfunktion erstellen
+G_data = co.tf(num_data, den_data, 0.01)  # aus den Daten mit Zeitkonstante 0.01
+system2 = co.tf(num2, den2)  # von System 2
 
 # System 2 von kontinuierlich in zeitdiskret umgewandelt
 system2_c2d = com.c2d(system2, 0.01, method='zoh')
 
-# Umgewandelte zeitdiskrete System 2 linear simuliert
-y_2, t_out_2, x_out_2 = com.lsim(system2_c2d, u, t)
+# Systeme mit Sprungantwort simulieren
+y_data, t_out_data, x_out_data = com.lsim(G_data, u, t)  # von Daten identifiziertes System
+y_2, t_out_2, x_out_2 = com.lsim(system2_c2d, u, t)  # von System 2, das im zeitdiskret umgewandelt wurde
 
 # ----------------------------------
 # POSTPROCESSING
