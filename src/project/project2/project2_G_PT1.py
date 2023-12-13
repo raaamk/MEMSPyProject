@@ -53,6 +53,10 @@ import pandas as pd
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 
+# Definieren der Übertragungsfunktion für Aufgabe 4 & 5
+num2 = [3]
+den2 = [6, 2, 1]
+
 # Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
 t = np.arange(0, 30, 0.01)
 
@@ -126,12 +130,14 @@ G_data = co.tf(num_data, den_data, 0.01)
 # System, welches aus den Data erstellt wurde, linear simulieren
 y_data, t_out_data, x_out_data = com.lsim(G_data, u, t)
 
-# System aus Aufgabe 1 von kontinuierlich in zeitdiskret umgewandelt
-system_c2d = com.c2d(system, 0.01, method='zoh')
+# Übertragungsfunktion von System 2
+system2 = co.tf(num2, den2)
 
-# Umgewandelte zeitdiskrete System nochmal linear simuliert
-y_c2d, t_out_c2d, x_out_c2d = com.lsim(system_c2d, u, t)
+# System 2 von kontinuierlich in zeitdiskret umgewandelt
+system2_c2d = com.c2d(system2, 0.01, method='zoh')
 
+# Umgewandelte zeitdiskrete System 2 linear simuliert
+y_2, t_out_2, x_out_2 = com.lsim(system2_c2d, u, t)
 
 # ----------------------------------
 # POSTPROCESSING
@@ -140,6 +146,7 @@ y_c2d, t_out_c2d, x_out_c2d = com.lsim(system_c2d, u, t)
 # Print
 print('RMSE:', rmse)
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
+print(system2)
 
 # Grid aktivieren für Plots
 plt.rcParams['axes.grid'] = True
@@ -179,17 +186,17 @@ fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
 fig.suptitle('Aufgabe 4 & 5', fontsize=16)
 
 # Plot 1: Systemantwort von Aufgabe 4 & 5
-axs[0].plot(t_out_data, y_data, label='zeitdiskretes Ausgangssignal')
+axs[0].plot(t_out_data, y_data, label='Ausgangssignal')
 axs[0].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Systemantwort')
-axs[0].set_title('Systemantwort')
+axs[0].set_title('Systemantwort vom identifizierten System')
 axs[0].legend()
 
 # Plot 2: Systemantwort von Aufgabe 1, 2 & 3
-axs[1].plot(t_out_c2d, y_c2d, label='Ausgangssignal')
+axs[1].plot(t_out_2, y_2, label='Ausgangssignal')
 axs[1].set_xlabel('Zeit [s]')
 axs[1].set_ylabel('Systemantwort')
-axs[1].set_title('Systemantwort von Aufgabe 1')
+axs[1].set_title('Systemantwort von System 2')
 axs[1].legend()
 
 # Allgemeine Figure-Einstellungen
