@@ -156,7 +156,6 @@ y_2, t_out_2, x_out_2 = com.lsim(system2_c2d, u, t)  # von System 2, das im zeit
 # Print
 print('RMSE:', rmse)
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
-print(system2)
 
 # Grid aktivieren für Plots
 plt.rcParams['axes.grid'] = True
