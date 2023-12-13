@@ -132,7 +132,7 @@ rmse = math.sqrt(RMSE_Zaehler / n)
 # ----------------------------------
 
 # Parameter bestimmen
-a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten_pd['y'], rcond=None)[0]
+a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten[:, 1], rcond=None)[0]
 
 # Berechnete Parameter in Arrays
 num_data = np.array([b1, b2])
