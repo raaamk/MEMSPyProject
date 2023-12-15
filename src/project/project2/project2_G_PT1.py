@@ -146,8 +146,8 @@ system2 = co.tf(num2, den2)  # von System 2
 system2_c2d = com.c2d(system2, 0.01, method='zoh')
 
 # Systeme mit Sprungantwort simulieren
-y_data, t_out_data, x_out_data = com.lsim(G_data, u, t)  # von Daten identifiziertes System
-y_2, t_out_2, x_out_2 = com.lsim(system2_c2d, u, t)  # von System 2, das im zeitdiskret umgewandelt wurde
+t_out_data, y_data = co.step_response(G_data, t)  # von Daten identifiziertes System
+t_out_2, y_2 = co.step_response(system2_c2d, t)  # von System 2, das im zeitdiskret umgewandelt wurde
 
 # ----------------------------------
 # POSTPROCESSING
