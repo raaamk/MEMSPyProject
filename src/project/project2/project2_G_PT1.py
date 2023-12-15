@@ -135,7 +135,7 @@ rmse = math.sqrt(RMSE_Zaehler / n)
 a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten[:, 1], rcond=None)[0]
 
 # Berechnete Parameter in Arrays
-num_data = np.array([b1, b2])
+num_data = np.array([b1, b2, 0])
 den_data = np.array([1, a1, a2, a3])
 
 # Übertragungsfunktion erstellen
