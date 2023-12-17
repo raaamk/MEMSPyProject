@@ -44,7 +44,6 @@ from gekko import GEKKO
 import math
 import pandas as pd
 
-
 # ----------------------------------
 # PARAMETERS
 # ----------------------------------
@@ -77,20 +76,18 @@ nb = 1  # Anzahl der Eingabekoeffizienten
 # Daten einlesen und Matrix erstellen
 daten_pd = pd.read_csv('mems_identification_data.csv', sep=',', header=0)
 daten = np.array(daten_pd)
-M = np.array([(-0, -0, -0, 0, 0),
-              (-daten[0, 1], -0, -0, daten[0, 0], 0),
-              (-daten[1, 1], -daten[0, 1], -0, daten[1, 0], daten[0, 0]),
-              (-daten[2, 1], -daten[1, 1], -daten[0, 1], daten[2, 0], daten[1, 0]),
-              (-daten[3, 1], -daten[2, 1], -daten[1, 1], daten[3, 0], daten[2, 0]),
-              (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[4, 0], daten[3, 0]),
-              (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[5, 0], daten[4, 0]),
-              (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[6, 0], daten[5, 0]),
-              (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[7, 0], daten[6, 0]),
-              (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[8, 0], daten[7, 0]),
-              (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[9, 0], daten[8, 0]),
-              (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[10, 0], daten[9, 0]),
-              (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[11, 0], daten[10, 0])])
-
+y_data_11 = daten[-11:, 1]  # Letzten 11 Werte von y in Array
+M = np.array([(-daten[2, 1], -daten[1, 1], -daten[0, 1], daten[1, 0], daten[0, 0]),
+              (-daten[3, 1], -daten[2, 1], -daten[1, 1], daten[2, 0], daten[1, 0]),
+              (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[3, 0], daten[2, 0]),
+              (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[4, 0], daten[3, 0]),
+              (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[5, 0], daten[4, 0]),
+              (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[6, 0], daten[5, 0]),
+              (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[7, 0], daten[6, 0]),
+              (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[8, 0], daten[7, 0]),
+              (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[9, 0], daten[8, 0]),
+              (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[10, 0], daten[9, 0]),
+              (-daten[12, 1], -daten[11, 1], -daten[10, 1], daten[11, 0], daten[10, 0])])
 
 # ----------------------------------
 # FUNCTIONS
@@ -126,13 +123,12 @@ while i < n:
 
 rmse = math.sqrt(RMSE_Zaehler / n)
 
-
 # ----------------------------------
 # AUFGABE 4 & 5
 # ----------------------------------
 
 # Parameter bestimmen
-a1, a2, a3, b1, b2 = np.linalg.lstsq(M, daten[:, 1], rcond=None)[0]
+a1, a2, a3, b1, b2 = np.linalg.lstsq(M, y_data_11, rcond=None)[0]
 
 # Berechnete Parameter in Arrays
 num_data = np.array([b1, b2, 0])
