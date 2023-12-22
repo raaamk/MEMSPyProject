@@ -2,14 +2,8 @@
 INFO
 Project 2
 
-INPUT VARIABLES
--
-
-OUTPUT VARIABLES
--
-
 DESCRIPTION
--
+Abgabe 2 von MEMS Projekt an der TH Köln
 
 FILE
 .../project2_G_PT1.py
@@ -27,7 +21,7 @@ DATE
 29.11.2023
 
 LAST MODIFIED
-29.11.2023
+22.12.2023
 
 Copyright 2023 - TH Köln
 """
@@ -63,15 +57,17 @@ t2 = np.arange(0, 41.5, 0.1)  # von 0 bis 41.5, in 0,1 Sekunden-Schritten
 # Eingangssignal definieren 1, solang wie t
 u = np.ones_like(t)
 
-# Variablen für Aufgabe 4 & 5
+# Variablen für Aufgabe 1, 2 & 3
 n = len(t)  # Anzahl der Datenpunkte von Zeitvektor
 i = 0
 absoluter_Fehler = np.zeros(n)
 relativer_Fehler = np.zeros(n)
 RMSE_Zaehler = 0
 
-absoluter_Fehler2 = np.zeros(415)
-relativer_Fehler2 = np.zeros(415)
+# Variablen für Aufgabe 4 & 5
+n2 = len(t2)
+absoluter_Fehler2 = np.zeros(n2)
+relativer_Fehler2 = np.zeros(n2)
 RMSE_Zaehler2 = 0
 
 # Koeffizienten bei SysId
@@ -93,10 +89,6 @@ M = np.array([(-daten[1, 1], -daten[0, 1], daten[1, 0], daten[0, 0]),
               (-daten[9, 1], -daten[8, 1], daten[9, 0], daten[8, 0]),
               (-daten[10, 1], -daten[9, 1], daten[10, 0], daten[9, 0]),
               (-daten[11, 1], -daten[10, 1], daten[11, 0], daten[10, 0])])
-
-# ----------------------------------
-# FUNCTIONS
-# ----------------------------------
 
 
 # ----------------------------------
@@ -150,7 +142,8 @@ system2_c2d = com.c2d(system2, 0.1, method='zoh')
 t_out_data, y_data = co.step_response(G_data)  # von Daten identifiziertes System
 t_out_2, y_2 = co.step_response(system2_c2d)  # von System 2, das im zeitdiskret umgewandelt wurde
 
-for j in range(0, 415):
+# Relativer & absoluter Fehler und RMSE berechnen für Aufgabe 5
+for j in range(0, n2):
     absoluter_Fehler2[j] = (y_2[j] - y_data[j])
     if y_data[j] != 0:
         relativer_Fehler2[j] = absoluter_Fehler2[j] / y_data[j]
@@ -163,6 +156,7 @@ rmse2 = math.sqrt(RMSE_Zaehler2 / len(y_data))
 # ----------------------------------
 
 # Print
+print('-------------------------------------------------')
 print('RMSE aus Aufgabe 3:', rmse)
 print('-------------------------------------------------')
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
