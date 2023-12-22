@@ -56,8 +56,9 @@ den = [5, 1]
 num2 = [3]
 den2 = [6, 2, 1]
 
-# Zeitvektor (von 0 bis 30, in 0,01 Sekunden-Schritten)
-t = np.arange(0, 30, 0.01)
+# Zeitvektoren
+t = np.arange(0, 30, 0.01)  # von 0 bis 30, in 0,01 Sekunden-Schritten
+t2 = np.arange(0, 41.5, 0.1)  # von 0 bis 41.5, in 0,1 Sekunden-Schritten
 
 # Eingangssignal definieren 1, solang wie t
 u = np.ones_like(t)
@@ -68,6 +69,10 @@ i = 0
 absoluter_Fehler = np.zeros(n)
 relativer_Fehler = np.zeros(n)
 RMSE_Zaehler = 0
+
+absoluter_Fehler2 = np.zeros(415)
+relativer_Fehler2 = np.zeros(415)
+RMSE_Zaehler2 = 0
 
 # Koeffizienten bei SysId
 na = 1  # Anzahl der Ausgabekoeffizienten
@@ -115,7 +120,7 @@ ypred, p, K = m.sysid(t=t_out, u=u, y=y_with_noise, pred='meas', na=na, nb=nb)
 
 # Relativer & absoluter Fehler und RMSE berechnen für Aufgabe 3
 while i < n:
-    absoluter_Fehler[i] = abs(y[i] - ypred[i])
+    absoluter_Fehler[i] = y[i] - ypred[i]
     if y[i] != 0:
         relativer_Fehler[i] = absoluter_Fehler[i] / y[i]
     RMSE_Zaehler = RMSE_Zaehler + absoluter_Fehler[i] ** 2
@@ -145,13 +150,24 @@ system2_c2d = com.c2d(system2, 0.1, method='zoh')
 t_out_data, y_data = co.step_response(G_data)  # von Daten identifiziertes System
 t_out_2, y_2 = co.step_response(system2_c2d)  # von System 2, das im zeitdiskret umgewandelt wurde
 
+for j in range(0, 415):
+    absoluter_Fehler2[j] = (y_2[j] - y_data[j])
+    if y_data[j] != 0:
+        relativer_Fehler2[j] = absoluter_Fehler2[j] / y_data[j]
+    RMSE_Zaehler2 = RMSE_Zaehler2 + absoluter_Fehler2[j] ** 2
+
+rmse2 = math.sqrt(RMSE_Zaehler2 / len(y_data))
+
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
 
 # Print
-print('RMSE:', rmse)
+print('RMSE aus Aufgabe 3:', rmse)
+print('-------------------------------------------------')
 print('Übertragungsfunktion aus eingelesenen Daten:', G_data)
+print('-------------------------------------------------')
+print('RMSE aus Aufgabe 5:', rmse2)
 
 # Grid aktivieren für Plots
 plt.rcParams['axes.grid'] = True
@@ -187,22 +203,30 @@ axs[2].legend()
 plt.tight_layout()
 
 # Figure 2 für Aufgabe 4 & 5 erstellen für Diagramme
-fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
 fig.suptitle('Aufgabe 4 & 5', fontsize=16)
 
 # Plot 1: Systemantwort von Aufgabe 4 & 5
-axs[0].plot(t_out_data, y_data, label='Ausgangssignal')
+axs[0].plot(t_out_data, y_data, label='Ausgangssignal vom identifizierten System')
+axs[0].plot(t_out_2, y_2, label='Ausgangssignal von System 2')
 axs[0].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Systemantwort')
-axs[0].set_title('Systemantwort vom identifizierten System')
+axs[0].set_title('Systemantwort')
 axs[0].legend()
 
-# Plot 2: Systemantwort von Aufgabe 1, 2 & 3
-axs[1].plot(t_out_2, y_2, label='Ausgangssignal')
+# Plot 2: Relativer Fehler
+axs[1].plot(t2, relativer_Fehler2, label='Relativer Fehler')
 axs[1].set_xlabel('Zeit [s]')
-axs[1].set_ylabel('Systemantwort')
-axs[1].set_title('Systemantwort von System 2')
+axs[1].set_ylabel('Prozent [%]')
+axs[1].set_title('Relativer Fehler')
 axs[1].legend()
+
+# Plot 2: Absoluter Fehler
+axs[2].plot(t2, absoluter_Fehler2, label='Absoluter Fehler')
+axs[2].set_xlabel('Zeit [s]')
+axs[2].set_ylabel('Fehler')
+axs[2].set_title('Absoluter Fehler')
+axs[2].legend()
 
 # Allgemeine Figure-Einstellungen
 plt.tight_layout()
