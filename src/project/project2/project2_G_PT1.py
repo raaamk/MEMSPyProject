@@ -77,17 +77,17 @@ nb = 1  # Anzahl der Eingabekoeffizienten
 daten_pd = pd.read_csv('mems_identification_data.csv', sep=',', header=0)
 daten = np.array(daten_pd)
 y_data_11 = daten[-11:, 1]  # Letzten 11 Werte von y in Array
-M = np.array([(-daten[2, 1], -daten[1, 1], -daten[0, 1], daten[1, 0], daten[0, 0]),
-              (-daten[3, 1], -daten[2, 1], -daten[1, 1], daten[2, 0], daten[1, 0]),
-              (-daten[4, 1], -daten[3, 1], -daten[2, 1], daten[3, 0], daten[2, 0]),
-              (-daten[5, 1], -daten[4, 1], -daten[3, 1], daten[4, 0], daten[3, 0]),
-              (-daten[6, 1], -daten[5, 1], -daten[4, 1], daten[5, 0], daten[4, 0]),
-              (-daten[7, 1], -daten[6, 1], -daten[5, 1], daten[6, 0], daten[5, 0]),
-              (-daten[8, 1], -daten[7, 1], -daten[6, 1], daten[7, 0], daten[6, 0]),
-              (-daten[9, 1], -daten[8, 1], -daten[7, 1], daten[8, 0], daten[7, 0]),
-              (-daten[10, 1], -daten[9, 1], -daten[8, 1], daten[9, 0], daten[8, 0]),
-              (-daten[11, 1], -daten[10, 1], -daten[9, 1], daten[10, 0], daten[9, 0]),
-              (-daten[12, 1], -daten[11, 1], -daten[10, 1], daten[11, 0], daten[10, 0])])
+M = np.array([(-daten[1, 1], -daten[0, 1], daten[1, 0], daten[0, 0]),
+              (-daten[2, 1], -daten[1, 1], daten[2, 0], daten[1, 0]),
+              (-daten[3, 1], -daten[2, 1], daten[3, 0], daten[2, 0]),
+              (-daten[4, 1], -daten[3, 1], daten[4, 0], daten[3, 0]),
+              (-daten[5, 1], -daten[4, 1], daten[5, 0], daten[4, 0]),
+              (-daten[6, 1], -daten[5, 1], daten[6, 0], daten[5, 0]),
+              (-daten[7, 1], -daten[6, 1], daten[7, 0], daten[6, 0]),
+              (-daten[8, 1], -daten[7, 1], daten[8, 0], daten[7, 0]),
+              (-daten[9, 1], -daten[8, 1], daten[9, 0], daten[8, 0]),
+              (-daten[10, 1], -daten[9, 1], daten[10, 0], daten[9, 0]),
+              (-daten[11, 1], -daten[10, 1], daten[11, 0], daten[10, 0])])
 
 # ----------------------------------
 # FUNCTIONS
@@ -128,22 +128,22 @@ rmse = math.sqrt(RMSE_Zaehler / n)
 # ----------------------------------
 
 # Parameter bestimmen
-a1, a2, a3, b1, b2 = np.linalg.lstsq(M, y_data_11, rcond=None)[0]
+a1, a2, b1, b2 = np.linalg.lstsq(M, y_data_11, rcond=None)[0]
 
 # Berechnete Parameter in Arrays
 num_data = np.array([b1, b2, 0])
-den_data = np.array([1, a1, a2, a3])
+den_data = np.array([1, a1, a2])
 
 # Übertragungsfunktion erstellen
-G_data = co.tf(num_data, den_data, 0.01)  # aus den Daten mit Zeitkonstante 0.01
+G_data = co.tf(num_data, den_data, 0.1)  # aus den Daten mit Zeitkonstante 0.01
 system2 = co.tf(num2, den2)  # von System 2
 
 # System 2 von kontinuierlich in zeitdiskret umgewandelt
-system2_c2d = com.c2d(system2, 0.01, method='zoh')
+system2_c2d = com.c2d(system2, 0.1, method='zoh')
 
 # Systeme mit Sprungantwort simulieren
-t_out_data, y_data = co.step_response(G_data, t)  # von Daten identifiziertes System
-t_out_2, y_2 = co.step_response(system2_c2d, t)  # von System 2, das im zeitdiskret umgewandelt wurde
+t_out_data, y_data = co.step_response(G_data)  # von Daten identifiziertes System
+t_out_2, y_2 = co.step_response(system2_c2d)  # von System 2, das im zeitdiskret umgewandelt wurde
 
 # ----------------------------------
 # POSTPROCESSING
