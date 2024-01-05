@@ -36,7 +36,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as skl_ms
-import keras
 
 # ----------------------------------
 # PARAMETERS
@@ -106,7 +105,6 @@ matrix_val, matrix_test, y_val, y_test = skl_ms.train_test_split(matrix_rest, y_
 # AUFGABE 6
 # ----------------------------------
 
-model = keras.
 
 # ----------------------------------
 # POSTPROCESSING
