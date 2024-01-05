@@ -34,9 +34,9 @@ import control as co
 import control.matlab as com
 import numpy as np
 import matplotlib.pyplot as plt
-from gekko import GEKKO
-import math
 import pandas as pd
+import sklearn.model_selection as skl_ms
+import keras
 
 # ----------------------------------
 # PARAMETERS
@@ -84,6 +84,29 @@ for i in range(100 + ny, 3000):
     matrix.append(new_line)
 
 np.savetxt("matrix_aufgabe3_csv", matrix, delimiter=',')
+
+
+# ----------------------------------
+# AUFGABE 4
+# ----------------------------------
+
+matrix_import = np.array(pd.read_csv('matrix_aufgabe3_csv', sep=','))
+labels = matrix_import[:, 11]
+
+
+# ----------------------------------
+# AUFGABE 5
+# ----------------------------------
+
+matrix_train, matrix_rest, y_train, y_rest = skl_ms.train_test_split(matrix_import, labels, test_size=0.3, train_size=0.7)
+matrix_val, matrix_test, y_val, y_test = skl_ms.train_test_split(matrix_rest, y_rest, test_size=0.33, train_size=0.67)
+
+
+# ----------------------------------
+# AUFGABE 6
+# ----------------------------------
+
+model = keras.
 
 # ----------------------------------
 # POSTPROCESSING
