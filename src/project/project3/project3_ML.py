@@ -82,14 +82,14 @@ for i in range(100 + ny, 3000):
     new_line = [u[i], u[i-1], u[i-2], u[i-3], u[i-4], u[i-5], u[i-6], u[i-7], u[i-8], u[i-9], u[i-10], u[i-11], y[i], y[i-1], y[i-2], y[i-3], y[i-4], y[i-5], y[i-6], y[i-7], y[i-8], y[i-9], y[i-10], y[i-11]]
     matrix.append(new_line)
 
-np.savetxt("matrix_aufgabe3_csv", matrix, delimiter=',')
+np.savetxt("matrix_aufgabe3_daten.csv", matrix, delimiter=',')
 
 
 # ----------------------------------
 # AUFGABE 4
 # ----------------------------------
 
-matrix_import = np.array(pd.read_csv('matrix_aufgabe3_csv', sep=','))
+matrix_import = np.array(pd.read_csv('matrix_aufgabe3_daten.csv', sep=','))
 labels = matrix_import[:, 11]
 
 
