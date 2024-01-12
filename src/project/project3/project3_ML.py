@@ -114,6 +114,7 @@ model = k.Sequential(
         k.layers.Dense(16, name="layer2"),
         k.layers.Dense(64, activation='sigmoid', name="layer3"),
         k.layers.Dense(8, name="layer4"),
+        k.layers.Dense(1, name="layer5")
     ]
 )
 
