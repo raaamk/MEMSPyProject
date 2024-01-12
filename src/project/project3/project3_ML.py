@@ -92,7 +92,7 @@ np.savetxt("matrix_aufgabe3_daten.csv", matrix, delimiter=',')
 # AUFGABE 4
 # ----------------------------------
 
-matrix_import = np.array(pd.read_csv('matrix_aufgabe3_daten.csv', sep=',', header=0))
+matrix_import = np.array(pd.read_csv('matrix_aufgabe3_daten.csv', sep=','))
 labels = matrix_import[:, 11]
 features = np.delete(matrix_import, 11, axis=1)
 
