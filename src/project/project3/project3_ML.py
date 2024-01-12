@@ -69,7 +69,7 @@ system_c = co.tf(num, den, 0.01)
 
 sinus_signal = amp * np.sin(2 * np.pi * freq * t)
 noise = np.random.normal(0, std_dev, sinus_signal.shape)
-jump_array = [0] * jump_sek * 100 + [10 ** 8] * (3000 - jump_sek * 100)
+jump_array = [10 ** 8] * 3000
 
 u = (sinus_signal + noise) * jump_array
 
@@ -82,7 +82,7 @@ y, t_out, x_out = com.lsim(system_c, u, t)
 matrix = []
 nu = ny = 11
 
-for i in range(101 + ny, 3000):
+for i in range(1 + ny, 3000):
     new_line = [u[i], u[i - 1], u[i - 2], u[i - 3], u[i - 4], u[i - 5], u[i - 6], u[i - 7], u[i - 8], u[i - 9], u[i - 10], u[i - 11], y[i], y[i - 1], y[i - 2], y[i - 3], y[i - 4], y[i - 5], y[i - 6], y[i - 7], y[i - 8], y[i - 9], y[i - 10], y[i - 11]]
     matrix.append(new_line)
 
@@ -100,8 +100,7 @@ features = np.delete(matrix_import, 11, axis=1)
 # AUFGABE 5
 # ----------------------------------
 
-X_train, X_rest, y_train, y_rest = skl_ms.train_test_split(features, labels, test_size=0.3, train_size=0.7)
-X_val, X_test, y_val, y_test = skl_ms.train_test_split(X_rest, y_rest, test_size=0.33, train_size=0.67)
+X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, train_size=0.9, test_size=0.1)
 
 
 # ----------------------------------
@@ -110,7 +109,7 @@ X_val, X_test, y_val, y_test = skl_ms.train_test_split(X_rest, y_rest, test_size
 
 model = k.Sequential(
     [
-        k.layers.Normalization(axis=nu+ny, name="layer1"),
+        k.layers.Normalization(input_shape=(23, ), name="layer1"),
         k.layers.Dense(16, name="layer2"),
         k.layers.Dense(64, activation='sigmoid', name="layer3"),
         k.layers.Dense(8, name="layer4"),
@@ -123,9 +122,8 @@ model = k.Sequential(
 # ----------------------------------
 
 adam_opt = k.optimizers.Adam(learning_rate=0.001)
-model.compile(optimizer=adam_opt, loss='mean_squared_error', metrics=['mean_squared_error'])
+model.compile(optimizer=adam_opt, loss='mse', metrics=['mse'])
 
-model.summary()
 
 # ----------------------------------
 # AUFGABE 8
@@ -133,15 +131,17 @@ model.summary()
 
 callback = k.callbacks.EarlyStopping(monitor='loss', patience=100)
 
-model.fit(
+history = model.fit(
     x=X_train,
     y=y_train,
     batch_size=64,
     epochs=500,
     verbose='auto',
     callbacks=[callback],
-    validation_data=y_val.all()
+    validation_split=0.22222222222
 )
+
+loss_values = history.history['loss']
 
 model.summary()
 
@@ -165,16 +165,27 @@ fig.suptitle('Aufgabe 1 & 2', fontsize=16)
 # Plot 1: Eingangssignal
 axs[0].plot(t, u, label='Eingangssignal')
 axs[0].set_xlabel('Zeit [s]')
-axs[0].set_ylabel('')
+axs[0].set_ylabel('Wert')
 axs[0].set_title('Eingang')
 axs[0].legend()
 
 # Plot 2: Ausgangssignal
 axs[1].plot(t_out, y, label='Ausgangssignal')
 axs[1].set_xlabel('Zeit [s]')
-axs[1].set_ylabel('')
+axs[0].set_ylabel('Wert')
 axs[1].set_title('Ausgang')
 axs[1].legend()
+
+# Figure 2 für Aufgabe 8 & 9
+fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+fig.suptitle('Aufgabe 8 & 9', fontsize=16)
+
+# Plot 1
+axs[0].plot(loss_values, label='Loss')
+axs[0].set_xlabel('Epochen')
+axs[0].set_ylabel('Wert')
+axs[0].set_title('Trainingsverlauf')
+axs[0].legend()
 
 # Allgemeine Figure-Einstellungen
 plt.tight_layout()
