@@ -110,7 +110,7 @@ X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, tra
 
 model = k.Sequential(
     [
-        k.layers.Normalization(input_shape=(23, )),
+        k.layers.BatchNormalization(input_shape=(23, )),
         k.layers.Dense(16),
         k.layers.Dense(64, activation='sigmoid'),
         k.layers.Dense(8),
@@ -130,7 +130,7 @@ model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 # AUFGABE 8
 # ----------------------------------
 
-callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode='auto')
+callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode=min, min_delta=0.00001)
 
 history = model.fit(
     x=X_train,
@@ -138,7 +138,7 @@ history = model.fit(
     batch_size=64,
     epochs=500,
     verbose='auto',
-    callbacks=callback,
+    callbacks=None,
     validation_split=0.22222222
 )
 
@@ -157,6 +157,10 @@ print('Evaluation:')
 evaluate_loss, evaluate_metrics = model.evaluate(X_test, y_test, batch_size=64)
 print('Verlustwert:', evaluate_loss)
 print('Metrikwert:', evaluate_metrics)
+
+#input_predict = [0] * 12 + [0] * 11
+#y_predict = []
+#y_predict.append(model.predict(input_predict))
 
 # ----------------------------------
 # POSTPROCESSING
