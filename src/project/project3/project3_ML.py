@@ -111,7 +111,7 @@ X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, tra
 
 model = k.Sequential(
     [
-        k.layers.Normalization(input_shape=(23, ), name="layer1"),
+        k.layers.Normalization(input_shape=(23, )),
         k.layers.Dense(16),
         k.layers.Dense(64, activation='sigmoid'),
         k.layers.Dense(8),
@@ -131,7 +131,7 @@ model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 # AUFGABE 8
 # ----------------------------------
 
-callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode=min)
+callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode='auto')
 
 history = model.fit(
     x=X_train,
