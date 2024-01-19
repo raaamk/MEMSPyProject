@@ -36,7 +36,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as skl_ms
-import sklearn as skl
 
 import os
 
