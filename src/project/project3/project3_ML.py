@@ -155,7 +155,7 @@ model.summary()
 
 print('--------------------------------------------------------------------------------------------------')
 print('Evaluation:')
-evaluate_loss, evaluate_metrics = model.evaluate(x=X_test, y=y_test, batch_size=64)
+evaluate_loss, evaluate_metrics = model.evaluate(X_test, y_test, batch_size=64)
 print('Verlustwert:', evaluate_loss)
 print('Metrikwert:', evaluate_metrics)
 
