@@ -36,6 +36,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as skl_ms
+import sklearn as skl
 
 import os
 
@@ -93,15 +94,16 @@ np.savetxt("matrix_aufgabe3_daten.csv", matrix, delimiter=',')
 # ----------------------------------
 
 matrix_import = np.array(pd.read_csv('matrix_aufgabe3_daten.csv', sep=','))
-labels = matrix_import[:, 11]
-features = np.delete(matrix_import, 11, axis=1)
+labels = matrix_import[:, 12]
+features = np.delete(matrix_import, 12, axis=1)
+
+print(labels)
 
 # ----------------------------------
 # AUFGABE 5
 # ----------------------------------
 
-X_train, X_rest, y_train, y_rest = skl_ms.train_test_split(features, labels, train_size=0.7, test_size=0.3)
-X_val, X_test, y_val, y_test = skl_ms.train_test_split(X_rest, y_rest, train_size=0.67, test_size=0.33)
+X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, train_size=0.9, test_size=0.1)
 
 
 # ----------------------------------
@@ -111,10 +113,10 @@ X_val, X_test, y_val, y_test = skl_ms.train_test_split(X_rest, y_rest, train_siz
 model = k.Sequential(
     [
         k.layers.Normalization(input_shape=(23, ), name="layer1"),
-        k.layers.Dense(16, name="layer2"),
-        k.layers.Dense(64, activation='sigmoid', name="layer3"),
-        k.layers.Dense(8, name="layer4"),
-        k.layers.Dense(1, name="layer5")
+        k.layers.Dense(16),
+        k.layers.Dense(64, activation='sigmoid'),
+        k.layers.Dense(8),
+        k.layers.Dense(1)
     ]
 )
 
@@ -130,7 +132,7 @@ model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 # AUFGABE 8
 # ----------------------------------
 
-callback = k.callbacks.EarlyStopping(monitor='loss', patience=1, verbose=1, min_delta=0.0001, mode='auto')
+callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode=min)
 
 history = model.fit(
     x=X_train,
@@ -139,7 +141,7 @@ history = model.fit(
     epochs=500,
     verbose='auto',
     callbacks=callback,
-    validation_data=(X_val, y_val)
+    validation_split=0.22222222
 )
 
 loss_values = history.history['loss']
@@ -153,8 +155,10 @@ model.summary()
 # ----------------------------------
 
 print('--------------------------------------------------------------------------------------------------')
-evaluate = model.evaluate(x=X_test, y=y_test, batch_size=64)
-print('Evaluation:', evaluate)
+print('Evaluation:')
+evaluate_loss, evaluate_metrics = model.evaluate(x=X_test, y=y_test, batch_size=64)
+print('Verlustwert:', evaluate_loss)
+print('Metrikwert:', evaluate_metrics)
 
 # ----------------------------------
 # POSTPROCESSING
