@@ -49,7 +49,8 @@ import keras as k
 t = np.arange(0, 30, 0.01)
 amp = 1
 freq = 0.1
-std_dev = 0.2
+std_dev = 0.1
+
 
 # ----------------------------------
 # AUFGABE 1
@@ -58,7 +59,8 @@ std_dev = 0.2
 num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 
-system_c = co.tf(num, den, 0.01)
+system_c = co.tf(num, den)
+system_c = com.c2d(system_c, 0.01, method='zoh')
 
 
 # ----------------------------------
@@ -69,9 +71,10 @@ sinus_signal = amp * np.sin(2 * np.pi * freq * t)
 noise = np.random.normal(0, std_dev, sinus_signal.shape)
 jump_array = [10 ** 8] * 3000
 
-u = (sinus_signal + noise) * jump_array
+u = (noise + sinus_signal) * jump_array
 
 y, t_out, x_out = com.lsim(system_c, u, t)
+
 
 # ----------------------------------
 # AUFGABE 3
@@ -85,6 +88,7 @@ for i in range(1 + ny, 3000):
     matrix.append(new_line)
 
 np.savetxt("matrix_aufgabe3_daten.csv", matrix, delimiter=',')
+
 
 # ----------------------------------
 # AUFGABE 4
@@ -149,12 +153,15 @@ loss_values = history.history['loss']
 
 u_predict = [0] * 12 + [1] * 3000
 y_predict = [0] * 12
+t_predict = np.arange(0, 10, 0.01)
 
-for i in range(1 + ny, 3000):
+for i in range(1 + ny, len(t_predict)):
     print('Predict-Schleife Step:', i - 11)
     input_predict = np.array([[u_predict[i], u_predict[i - 1], u_predict[i - 2], u_predict[i - 3], u_predict[i - 4], u_predict[i - 5], u_predict[i - 6], u_predict[i - 7], u_predict[i - 8], u_predict[i - 9], u_predict[i - 10], u_predict[i - 11], y_predict[i - 1], y_predict[i - 2], y_predict[i - 3], y_predict[i - 4], y_predict[i - 5], y_predict[i - 6], y_predict[i - 7], y_predict[i - 8], y_predict[i - 9], y_predict[i - 10], y_predict[i - 11]]])
-    y_predict_arr = model.predict(input_predict)
-    y_predict.append(y_predict_arr[0, 0])
+    y_predict.append(model.predict(input_predict)[0, 0])
+
+y_predict = y_predict[12:]
+t_predict = t_predict[12:]
 
 print('--------------------------------------------------------------------------------------------------')
 print('Evaluation:')
@@ -203,7 +210,7 @@ axs[0].set_title('Trainingsverlauf')
 axs[0].legend()
 
 # Plot 2:
-axs[1].plot(t, y_predict, label='Predict Sprungantwort')
+axs[1].plot(t_predict, y_predict, label='Predict Sprungantwort')
 axs[1].set_xlabel('Zeit [s]')
 axs[0].set_ylabel('Wert')
 axs[1].set_title('Ausgangssignal')
