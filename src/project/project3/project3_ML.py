@@ -36,9 +36,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as skl_ms
-import os
-
-os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras as k
 
 
@@ -112,7 +109,8 @@ X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, tra
 
 model = k.Sequential(
     [
-        k.layers.Normalization(input_shape=(23, )),
+        k.Input(shape=(23, )),
+        k.layers.Normalization(),
         k.layers.Dense(16),
         k.layers.Dense(64, activation='sigmoid'),
         k.layers.Dense(8),
@@ -132,7 +130,7 @@ model.compile(optimizer='adam', loss='mse', metrics=['mse'])
 # AUFGABE 8
 # ----------------------------------
 
-callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode=min, min_delta=0.00001)
+callback = k.callbacks.EarlyStopping(monitor='loss', patience=3, verbose=1, mode='min', min_delta=0.00001)
 
 history = model.fit(
     x=X_train,
