@@ -36,11 +36,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sklearn.model_selection as skl_ms
-
 import os
 
 os.environ["KERAS_BACKEND"] = "tensorflow"
 import keras as k
+
 
 # ----------------------------------
 # PARAMETERS
@@ -50,7 +50,6 @@ t = np.arange(0, 30, 0.01)
 amp = 1
 freq = 0.1
 std_dev = 0.2
-jump_sek = 1
 
 # ----------------------------------
 # AUFGABE 1
@@ -60,7 +59,6 @@ num = [8.3 * 10 ** (-8)]
 den = [5, 1]
 
 system_c = co.tf(num, den, 0.01)
-# system_d = com.c2d(system_c, 0.01, method='zoh')
 
 
 # ----------------------------------
@@ -110,7 +108,7 @@ X_train, X_test, y_train, y_test = skl_ms.train_test_split(features, labels, tra
 
 model = k.Sequential(
     [
-        k.layers.BatchNormalization(input_shape=(23, )),
+        k.layers.Normalization(input_shape=(23, )),
         k.layers.Dense(16),
         k.layers.Dense(64, activation='sigmoid'),
         k.layers.Dense(8),
@@ -144,13 +142,19 @@ history = model.fit(
 
 loss_values = history.history['loss']
 
-print('--------------------------------------------------------------------------------------------------')
-model.summary()
-
 
 # ----------------------------------
 # AUFGABE 9
 # ----------------------------------
+
+u_predict = [0] * 12 + [1] * 3000
+y_predict = [0] * 12
+
+for i in range(1 + ny, 3000):
+    print('Predict-Schleife Step:', i - 11)
+    input_predict = np.array([[u_predict[i], u_predict[i - 1], u_predict[i - 2], u_predict[i - 3], u_predict[i - 4], u_predict[i - 5], u_predict[i - 6], u_predict[i - 7], u_predict[i - 8], u_predict[i - 9], u_predict[i - 10], u_predict[i - 11], y_predict[i - 1], y_predict[i - 2], y_predict[i - 3], y_predict[i - 4], y_predict[i - 5], y_predict[i - 6], y_predict[i - 7], y_predict[i - 8], y_predict[i - 9], y_predict[i - 10], y_predict[i - 11]]])
+    y_predict_arr = model.predict(input_predict)
+    y_predict.append(y_predict_arr[0, 0])
 
 print('--------------------------------------------------------------------------------------------------')
 print('Evaluation:')
@@ -158,13 +162,13 @@ evaluate_loss, evaluate_metrics = model.evaluate(X_test, y_test, batch_size=64)
 print('Verlustwert:', evaluate_loss)
 print('Metrikwert:', evaluate_metrics)
 
-#input_predict = [0] * 12 + [0] * 11
-#y_predict = []
-#y_predict.append(model.predict(input_predict))
 
 # ----------------------------------
 # POSTPROCESSING
 # ----------------------------------
+
+print('--------------------------------------------------------------------------------------------------')
+model.summary()
 
 # Grid aktivieren für Plots
 plt.rcParams['axes.grid'] = True
@@ -188,7 +192,7 @@ axs[1].set_title('Ausgang')
 axs[1].legend()
 
 # Figure 2 für Aufgabe 8 & 9
-fig, axs = plt.subplots(2, 1, figsize=(10, 8), sharex=True)
+fig, axs = plt.subplots(2, 1, figsize=(10, 8))
 fig.suptitle('Aufgabe 8 & 9', fontsize=16)
 
 # Plot 1
@@ -197,6 +201,13 @@ axs[0].set_xlabel('Epochen')
 axs[0].set_ylabel('Wert')
 axs[0].set_title('Trainingsverlauf')
 axs[0].legend()
+
+# Plot 2:
+axs[1].plot(t, y_predict, label='Predict Sprungantwort')
+axs[1].set_xlabel('Zeit [s]')
+axs[0].set_ylabel('Wert')
+axs[1].set_title('Ausgangssignal')
+axs[1].legend()
 
 # Allgemeine Figure-Einstellungen
 plt.tight_layout()
