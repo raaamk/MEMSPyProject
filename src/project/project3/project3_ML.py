@@ -54,7 +54,8 @@ std_dev = 0.1  # Standardabweichung für Rauschen
 # ----------------------------------
 
 # Übertragungsfunktion definieren
-num = [8.3 * 10 ** (-8)]
+#num = [8.3 * 10 ** (-8)]
+num = [8.3 * 10 ** (-0)]  # Ist plausibler ohne 10^-8
 den = [5, 1]
 
 # Übertragungsfunktion als System
@@ -69,7 +70,8 @@ system_c = com.c2d(system_c, 0.01, method='zoh')  # Kontinuierlich zu Zeitdiskre
 # Beispiel Eingangssignal erstellen
 sinus_signal = amp * np.sin(2 * np.pi * freq * t)  # Sinus-Signal mit Frequenz umd Amplitude
 noise = np.random.normal(0, std_dev, sinus_signal.shape)  # Rausch-Signal mit Standardabweichung
-jump_array = [10 ** 8] * 3000  # Sprung-Signal
+#jump_array = [10 ** 8] * 3000  # Sprung-Signal
+jump_array = [10 ** 0] * 3000  # Sprung-Signal, angepasst auf ohne 10^-8 in Übertragungsfunktion
 
 # Zusammenfügen der Signale zu einem Eingangssignal
 u = (noise + sinus_signal) * jump_array
