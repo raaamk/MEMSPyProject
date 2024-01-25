@@ -172,6 +172,7 @@ y_predict = [0] * 12  # Array für die vorhergesagten y-Werte
 t_predict = np.arange(0, 10, 0.01)  # von 0 bis 10 Sekunden in 0.01 Schritten, 10 kann angepasst werden damit länger Predict-Schleife läuft
 
 # Schleife zum Vorhersagen von y
+print('--------------------------------------------------------------------------------------------------')
 for i in range(1 + ny, len(t_predict)):
     print('Predict-Schleife Step:', i - 11)
     input_predict = np.array([[u_predict[i], u_predict[i - 1], u_predict[i - 2], u_predict[i - 3], u_predict[i - 4], u_predict[i - 5], u_predict[i - 6], u_predict[i - 7], u_predict[i - 8], u_predict[i - 9], u_predict[i - 10], u_predict[i - 11], y_predict[i - 1], y_predict[i - 2], y_predict[i - 3], y_predict[i - 4], y_predict[i - 5], y_predict[i - 6], y_predict[i - 7], y_predict[i - 8], y_predict[i - 9], y_predict[i - 10], y_predict[i - 11]]])
