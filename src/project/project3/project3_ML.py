@@ -154,7 +154,7 @@ history = model.fit(
     batch_size=64,
     epochs=500,
     verbose='auto',
-    callbacks=None,  # Callback nicht verwendet, da sonst zu wenige Epochen; Callback jedoch einsetzbar
+    callbacks=callback,  # Callback nicht verwendet, da sonst zu wenige Epochen; Callback jedoch einsetzbar
     validation_split=0.22222222  # Aufteilen des Trainingsdatensatzes in Training und Validierung (Training 70 %, Validierung 20 %, Test 10 %)
 )
 
