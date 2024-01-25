@@ -180,7 +180,7 @@ for i in range(1 + ny, len(t_predict)):
     input_predict = np.array([[u_predict[i], u_predict[i - 1], u_predict[i - 2], u_predict[i - 3], u_predict[i - 4], u_predict[i - 5], u_predict[i - 6], u_predict[i - 7], u_predict[i - 8], u_predict[i - 9], u_predict[i - 10], u_predict[i - 11], y_predict[i - 1], y_predict[i - 2], y_predict[i - 3], y_predict[i - 4], y_predict[i - 5], y_predict[i - 6], y_predict[i - 7], y_predict[i - 8], y_predict[i - 9], y_predict[i - 10], y_predict[i - 11]]])
     y_predict.append(model.predict(input_predict)[0, 0])  # Da Return von model.predict ndarray, nur Wert wird abgespeichert in y_predict
 
-# Ersten Werte löschen, da 0
+# Ersten Werte löschen, da alle 0
 y_predict = y_predict[12:]
 t_predict = t_predict[12:]
 
