@@ -129,7 +129,7 @@ model = k.Sequential(
         k.layers.Dense(16),
         k.layers.Dense(64, activation='sigmoid'),
         k.layers.Dense(8),
-        k.layers.Dense(1)
+        k.layers.Dense(1)  # Nur ein Wert als Ausgabe
     ]
 )
 
