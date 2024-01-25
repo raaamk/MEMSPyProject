@@ -214,7 +214,7 @@ axs[0].legend()
 # Plot 2: Ausgangssignal
 axs[1].plot(t_out, y, label='Ausgangssignal')
 axs[1].set_xlabel('Zeit [s]')
-axs[0].set_ylabel('Wert')
+axs[1].set_ylabel('Wert')
 axs[1].set_title('Ausgang')
 axs[1].legend()
 
@@ -232,7 +232,7 @@ axs[0].legend()
 # Plot 2: Vorhergesagten y-Werte vom Modell
 axs[1].plot(t_predict, y_predict, label='Predict Sprungantwort')
 axs[1].set_xlabel('Zeit [s]')
-axs[0].set_ylabel('Wert')
+axs[1].set_ylabel('Wert')
 axs[1].set_title('Ausgangssignal')
 axs[1].legend()
 
